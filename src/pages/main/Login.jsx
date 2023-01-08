@@ -1,7 +1,11 @@
-import { Image, Container, Flex, Stack, Title, TextInput, Button, PasswordInput, MantineProvider } from '@mantine/core'
-import { useState } from 'react'
+import { MantineProvider, Container, Flex, Image, Stack, Title, TextInput, Button, PasswordInput } from '@mantine/core'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context'
 
 export default function () {
+    const navigate = useNavigate()
+    const auth = useAuth()
+
     return (
         <MantineProvider
             theme={{
@@ -26,7 +30,13 @@ export default function () {
                     <TextInput placeholder="username" />
                     <PasswordInput placeholder="password" />
                     <Stack>
-                        <Button fullWidth="true" radius="xl" size="md">Login</Button>
+                        <Button 
+                            onClick={() => {
+                                auth.signin('test', () => {navigate('/')})
+                                }
+                            }
+                            fullWidth="true" radius="xl" size="md">Login
+                        </Button>
                         <Button fullWidth="true" variant="outline" radius="xl" size="md">Register</Button>
                     </Stack>
                 </Flex>

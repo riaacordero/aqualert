@@ -1,15 +1,18 @@
-import { createHashRouter } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
+import RequireAuth from './components/RequireAuth.jsx';
 import Login from './pages/main/Login.jsx';
 import Home from './pages/main/Home.jsx';
 
-const router = createHashRouter([
+const router = createBrowserRouter([
     {
-        path: '/',
+        path: '/login',
         element: <Login />
     },
     {
         path: '/',
-        element: <Home />
+        element: <RequireAuth>
+            <Home />
+        </RequireAuth>
     }
 ]);
 
