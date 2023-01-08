@@ -32,7 +32,10 @@ function AuthProvider({ children }) {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <MantineProvider withGlobalStyles withNormalizeCSS>
+    <MantineProvider withGlobalStyles withNormalizeCSS theme={{
+        fontFamily: 'Poppins, sans-serif',
+        headings: { fontFamily: 'Poppins, sans-serif' }
+    }}>
       <AuthProvider>
         <RouterProvider router={router} />
       </AuthProvider>
