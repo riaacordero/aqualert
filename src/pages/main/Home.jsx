@@ -1,5 +1,5 @@
 import { ActionIcon, Button, Drawer, Flex, Group, Stack, Text } from '@mantine/core';
-import { IconMap2 } from '@tabler/icons';
+import { IconBell, IconMap2, IconNotification } from '@tabler/icons';
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useCallback, useEffect, useState } from 'react';
@@ -46,13 +46,13 @@ function StatusIndicator({ data, latLang, close }) {
             <Stack align="center" p="xl" spacing="lg">
                 <Stack spacing="sm">
                     <Text fz="xl" fw="bold">Status: {data.status}</Text>
-                    <Text>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Architecto, ducimus.</Text>
+                    <Text fz="xs">Experiencing problems on your area?</Text>
                 </Stack>
 
                 <Stack>
-                    <Button radius="xl" fullWidth>Report interruption</Button>
+                    <Button variant="gradient" radius="xl" fullWidth>Report interruption</Button>
                     <Button radius="xl" variant="outline" fullWidth>Check status history</Button>
-                    <Text fz="xs" fs="italic">Last updated: 10/17/2022</Text>
+                    <Text fz={10} fs="italic">Last updated: 10/17/2022</Text>
                 </Stack>
             </Stack>
         </Drawer>
@@ -65,15 +65,23 @@ export default function () {
 
     return (
         <Stack my="auto" h="100%" spacing={0}>
-            <Group p="md">
-                <ActionIcon size="sm">
-                    <IconMap2 />
-                </ActionIcon>
-                <Flex direction='column'>
-                    <Text fz={12} fw={600}>Registered Location</Text>
-                    <Text fz={12}>The location goes here</Text>
-                </Flex>
-            </Group>
+            <Stack p="md">
+                <Group position='apart'>
+                    <Group>
+                        <ActionIcon size="lg">
+                            <IconMap2 size={50} />
+                        </ActionIcon>
+                        <Flex direction='column'>
+                            <Text fz={12} fw={600}>Registered Location</Text>
+                            <Text fz={12}>The location goes here</Text>
+                        </Flex>
+                    </Group>
+                    <ActionIcon color='blue' size="lg">
+                        <IconBell size={50}/>
+                    </ActionIcon>
+                </Group>
+                <Text fz={10}>Click on the location pin to reveal status</Text>
+            </Stack>
 
             <MapContainer 
                 center={[7.03285, 125.49727]} 

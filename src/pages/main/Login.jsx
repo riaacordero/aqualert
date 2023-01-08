@@ -1,6 +1,7 @@
-import { MantineProvider, Container, Flex, Image, Stack, Title, TextInput, Button, PasswordInput } from '@mantine/core'
+import { MantineProvider, Container, Flex, Image, Stack, Title, TextInput, Button, PasswordInput, Checkbox } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context'
+import React from 'react'
 
 export default function () {
     const navigate = useNavigate()
@@ -10,7 +11,7 @@ export default function () {
         <Container my="auto" size={400} h="100%">
             <Flex
                 direction='column'
-                gap='sm'
+                gap='xl'
                 justify='center'
                 align='stretch'
                 w='100%'
@@ -21,16 +22,22 @@ export default function () {
                     sx={{ alignSelf: 'center' }}
                     src="./assets/water.png"
                     alt="water art from icons8" />
-                <Title>Welcome to Aqualert!</Title>
-                <TextInput placeholder="username" />
-                <PasswordInput placeholder="password" />
-                <Stack>
+                <Stack fz={12}>
+                    <Title color={"#04294F"} fz={30}>Welcome to Aqualert!</Title>
+                    Checking on your water supply has never been this easy.
+                </Stack>
+                <Stack spacing="xs">
+                    <TextInput placeholder="username" />
+                    <PasswordInput placeholder="password" />
+                    <Checkbox radius="xl" label="I am an admin"/>
+                </Stack>
+                <Stack spacing="xs">
                     <Button 
                         onClick={() => {
                             auth.signin('test', () => {navigate('/')})
                             }
                         }
-                        fullWidth radius="xl" size="md">Login
+                        variant="gradient" fullWidth radius="xl" size="md">Login
                     </Button>
                     <Button fullWidth variant="outline" radius="xl" size="md">Register</Button>
                 </Stack>

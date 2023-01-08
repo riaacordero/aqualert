@@ -1,4 +1,5 @@
 import { Image, Center, Flex, Stack, Title, TextInput, Button, PasswordInput, Text, Container, MantineProvider } from '@mantine/core'
+import React from 'react'
 import { useState } from 'react'
 
 export default function() {
@@ -36,7 +37,7 @@ export default function() {
                         <PasswordInput withAsterisk placeholder="password" />
                     </Stack>
 
-                    <Button  mt= "xl" fullWidth="true" radius="xl" size="md">Login</Button>
+                    <Button  mt= "xl" fullWidth radius="xl" size="md">Login</Button>
 
                 </Flex>
             </Container>
