@@ -1413,6 +1413,11 @@
   dependencies:
     "@floating-ui/dom" "^1.1.0"
 
+"@fontsource/poppins@^4.5.10":
+  "integrity" "sha512-oYZVHsnlwV3VWM1SE/m6SUxVh0QLk5+2wB+lBiXcI7N/0KVQWmV9YykaPqfJHBLvmdya+MAOnv+BQHeLU1vOOw=="
+  "resolved" "https://registry.npmjs.org/@fontsource/poppins/-/poppins-4.5.10.tgz"
+  "version" "4.5.10"
+
 "@grpc/grpc-js@~1.7.0":
   "integrity" "sha512-H9l79u4kJ2PVSxUNA08HMYAnUBLj9v6KjYQ7SQ71hOZcEXhShE/y5iQCesP8+6/Ik/7i2O0a10bPquIcYfufog=="
   "resolved" "https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.7.3.tgz"
