@@ -10,7 +10,11 @@ const router = createBrowserRouter([
     },
     {
         path: '/',
-        element: <Home />
+        element: (
+            <RequireAuth>
+                <Home />
+            </RequireAuth>
+        )
     }
 ]);
 

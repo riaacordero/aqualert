@@ -2,11 +2,18 @@ import { MantineProvider } from '@mantine/core'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
-import './index.css'
-import '@fontsource/poppins';
 import router from './router'
 import { fakeAuthProvider } from './auth'
 import { AuthContext } from './context'
+import './index.css'
+
+// fonts
+import '@fontsource/poppins/400.css';
+import '@fontsource/poppins/400-italic.css';
+import '@fontsource/poppins/500.css';
+import '@fontsource/poppins/500-italic.css';
+import '@fontsource/poppins/600.css';
+import '@fontsource/poppins/600-italic.css';
 
 function AuthProvider({ children }) {
   let [user, setUser] = React.useState(null);
@@ -31,14 +38,12 @@ function AuthProvider({ children }) {
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <MantineProvider withGlobalStyles withNormalizeCSS theme={{
-        fontFamily: 'Poppins, sans-serif',
-        headings: { fontFamily: 'Poppins, sans-serif' }
-    }}>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
-    </MantineProvider>
-  </React.StrictMode>,
+  <MantineProvider withGlobalStyles withNormalizeCSS theme={{
+      fontFamily: 'Poppins, sans-serif',
+      headings: { fontFamily: 'Poppins, sans-serif' }
+  }}>
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  </MantineProvider>,
 )
