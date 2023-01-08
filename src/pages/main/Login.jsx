@@ -1,4 +1,4 @@
-import { Image, Center, Flex, Stack, Title, TextInput, Button, PasswordInput, MantineProvider } from '@mantine/core'
+import { Image, Container, Flex, Stack, Title, TextInput, Button, PasswordInput, MantineProvider } from '@mantine/core'
 import { useState } from 'react'
 
 export default function () {
@@ -9,18 +9,20 @@ export default function () {
                 headings: { fontFamily: 'Poppins, sans-serif' }
             }}>
             <Flex
-                direction={{ base: 'column', sm: 'row' }}
+                direction='column'
                 gap={{ base: 'sm', sm: 'lg' }}
-                justify={{ sm: 'center' }}
-                align="center">
+                justify= 'center'
+                align='stretch'
+                m={100}>
                 <Image
                     justify="center"
                     width={250}
+                    sx={{alignSelf: 'center' }}
                     src="./assets/water.png"
                     alt="water art from icons8" />
-                <Title>Welcome to Aqualert</Title>
-                <TextInput placeholder="username" />
-                <PasswordInput withAsterisk placeholder="password" />
+                <Title>Welcome to Aqualert!</Title>
+                <TextInput placeholder="username"/>
+                <PasswordInput placeholder="password" />
                 <Stack>
                     <Button fullWidth="true" radius="xl" size="md">Login</Button>
                     <Button fullWidth="true" variant="outline" radius="xl" size="md">Register</Button>
