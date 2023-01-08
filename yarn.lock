@@ -1788,6 +1788,11 @@
     "@swc/core-win32-ia32-msvc" "1.3.24"
     "@swc/core-win32-x64-msvc" "1.3.24"
 
+"@tabler/icons@^1.119.0":
+  "integrity" "sha512-Fk3Qq4w2SXcTjc/n1cuL5bccPkylrOMo7cYpQIf/yw6zP76LQV9dtLcHQUjFiUnaYuswR645CnURIhlafyAh9g=="
+  "resolved" "https://registry.npmjs.org/@tabler/icons/-/icons-1.119.0.tgz"
+  "version" "1.119.0"
+
 "@types/estree@^1.0.0":
   "integrity" "sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ=="
   "resolved" "https://registry.npmjs.org/@types/estree/-/estree-1.0.0.tgz"
@@ -3072,7 +3077,7 @@
   dependencies:
     "safe-buffer" "^5.1.0"
 
-"react-dom@^16.8 || ^17.0 || ^18.0", "react-dom@^18.2.0", "react-dom@>=16.8", "react-dom@>=16.8.0":
+"react-dom@^16.8 || ^17.0 || ^18.0", "react-dom@^16.x || 17.x || 18.x", "react-dom@^18.2.0", "react-dom@>=16.8", "react-dom@>=16.8.0":
   "integrity" "sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-18.2.0.tgz"
   "version" "18.2.0"
@@ -3109,7 +3114,7 @@
     "use-composed-ref" "^1.3.0"
     "use-latest" "^1.2.1"
 
-"react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18.0.0", "react@^18.2.0", "react@>=16.8", "react@>=16.8.0":
+"react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18.0.0", "react@^16.x || 17.x || 18.x", "react@^18.2.0", "react@>=16.8", "react@>=16.8.0":
   "integrity" "sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ=="
   "resolved" "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   "version" "18.2.0"

@@ -13,6 +13,7 @@
     "@fontsource/poppins": "^4.5.10",
     "@mantine/core": "^5.10.0",
     "@mantine/hooks": "^5.10.0",
+    "@tabler/icons": "^1.119.0",
     "firebase": "^9.15.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
