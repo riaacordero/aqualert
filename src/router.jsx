@@ -6,12 +6,19 @@ import Login from './pages/main/Login.jsx';
 import Home from './pages/main/Home.jsx';
 import Report from './pages/main/Report.jsx';
 import Success from './pages/main/Success.jsx';
+import Register from './pages/main/Register.jsx';
 
 
 const router = createBrowserRouter([
     {
         path: '/login',
         element: <Login />
+    },
+    {
+        path: '/register',
+        element: (
+                <Register />
+        )
     },
     {
         path: '/',

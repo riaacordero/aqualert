@@ -38,29 +38,32 @@ export default function () {
                 </Stack>
                 {/* !! FORMS HERE !! */}
                 <form onSubmit={form.onSubmit((values) => console.log(values))}>
-                <Stack spacing="xs">
-                    <TextInput placeholder="Email address" />
-                    <PasswordInput placeholder="Password" />
-                    <Stack align='flex-start'>
-                        <Checkbox
-                            mt='md'
-                            label="Log me in as an admin"
-                            {...form.getInputProps('isAdmin', {type: 'checkbox'})}
-                        />
+                    <Stack spacing="xs">
+                        <TextInput placeholder="Email address" />
+                        <PasswordInput placeholder="Password" />
+                        <Stack align='flex-start'>
+                            <Checkbox
+                                mt='md'
+                                label="Log me in as an admin"
+                                {...form.getInputProps('isAdmin', {type: 'checkbox'})}
+                            />
+                        </Stack>                    
                     </Stack>
-                    
-                </Stack>
-                </form>
-                <Stack spacing="xs">
-                    <Button type="submit"
-                        onClick={() => {
-                            auth.signin('test', () => {navigate('/')})
+                    <Stack spacing="xs">
+                        <Button type="submit"
+                            onClick={() => {
+                                auth.signin('test', () => {navigate('/')})
+                                }
                             }
-                        }
-                        variant="gradient" fullWidth radius="xl" size="md">Login
-                    </Button>
-                    <Button fullWidth variant="outline" radius="xl" size="md">Register</Button>
-                </Stack>
+                            variant="gradient" fullWidth radius="xl" size="md">Login
+                        </Button>
+                        <Button 
+                            onClick={() => {
+                                navigate('/register')}
+                            }
+                        fullWidth variant="outline" radius="xl" size="md">Register</Button>
+                    </Stack>
+                </form>
             </Flex>
         </Container>
     )
