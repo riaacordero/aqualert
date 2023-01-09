@@ -30,30 +30,34 @@ export default function () {
                     <Title size={25}>Report Interruption</Title>
                 </Group>
                 <Text fz='sm'>Thank you for reporting your area. We would like to know more about what happened. Please fill up the form below with the details of your current water situation.</Text>
-                <Stack>
-                    <DatePicker
-                        placeholder='Select date' label='No water since'
-                        withAsterisk />
-                    <Textarea
-                        placeholder='Tell us more about what happened...' label='Complaint details' withAsterisk
-                        minRows={10}
-                        maxRows={20} />
-                </Stack>
-                <Button type="submit"
-                    onClick={() => {
-                        navigate('/success')}
-                    }
-                    variant="gradient" fullWidth radius="xl" size="md">
-                        <ActionIcon>
-                            <IconSend color='white'/>
-                        </ActionIcon>Submit
-                </Button>
-                <Button 
-                    onClick={() => {
-                        navigate('/')}
-                    }
-                    fullWidth variant="outline" radius="xl" size="md">Cancel
-                </Button>
+                <form onSubmit={form.onSubmit((values) => console.log(values))}>
+                    <Stack py={10}>
+                        <DatePicker
+                            placeholder='Select date' label='No water since'
+                            withAsterisk />
+                        <Textarea
+                            placeholder='Tell us more about what happened...' label='Complaint details' withAsterisk
+                            minRows={10}
+                            maxRows={20} />
+                    </Stack>
+                    <Stack py={50}>
+                        <Button type="submit"
+                            onClick={() => {
+                                navigate('/success')}
+                            }
+                            variant="gradient" fullWidth radius="xl" size="md">
+                                <ActionIcon>
+                                    <IconSend color='white'/>
+                                </ActionIcon>Submit
+                        </Button>
+                        <Button 
+                            onClick={() => {
+                                navigate('/')}
+                            }
+                            fullWidth variant="outline" radius="xl" size="md">Cancel
+                        </Button>
+                    </Stack>
+                </form>
             </Stack>
         </Container>
 
