@@ -4,10 +4,15 @@ import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useCallback, useEffect, useState } from 'react';
 import React from 'react';
+import { useAuth } from '../../context'
+import { useNavigate } from 'react-router-dom';
 
 function StatusIndicator({ data, latLang, close }) {
     const map = useMap();
     const [savedLatLang, setSavedLatLang] = useState(null);
+
+    const navigate = useNavigate()
+    const auth = useAuth()
 
     const onClick = useCallback(() => {
         if (!savedLatLang) return;
@@ -50,7 +55,12 @@ function StatusIndicator({ data, latLang, close }) {
                 </Stack>
 
                 <Stack>
-                    <Button variant="gradient" radius="xl" fullWidth>Report interruption</Button>
+                    <Button 
+                        onClick={() => {
+                            auth.signin('test', () => {navigate('/Report')})
+                            }
+                        }
+                        variant="gradient" radius="xl" fullWidth>Report interruption</Button>
                     <Button radius="xl" variant="outline" fullWidth>Check status history</Button>
                     <Text fz={10} fs="italic">Last updated: 10/17/2022</Text>
                 </Stack>

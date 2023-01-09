@@ -1,8 +1,9 @@
+import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import RequireAuth from './components/RequireAuth.jsx';
 import Login from './pages/main/Login.jsx';
 import Home from './pages/main/Home.jsx';
-import React from 'react';
+import Report from './pages/main/Report.jsx';
 
 const router = createBrowserRouter([
     {
@@ -17,6 +18,12 @@ const router = createBrowserRouter([
             <RequireAuth>
                 <Home />
             </RequireAuth>
+        )
+    },
+    {
+        path: '/report',
+        element: (
+                <Report />
         )
     }
 ]);
