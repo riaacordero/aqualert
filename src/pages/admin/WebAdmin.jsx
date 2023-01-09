@@ -1,6 +1,9 @@
 import { Divider, Space, Flex, Stack, Title, TextInput, Button, Paper, Text,  MantineProvider, Group, Table, ScrollArea, Select} from '@mantine/core'
 import { IconSearch } from '@tabler/icons'
 import { DataTable } from 'mantine-datatable';
+import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+
 import { useState } from 'react'
 
 
@@ -117,8 +120,26 @@ export default function() {
                                     
                         </Paper>  
 
-                        <Space h= "xl" />   
+                        <Space h= "xl" />  
 
+                        <MapContainer 
+                            center={[7.03285, 125.49727]} 
+                            zoom={20} 
+                            scrollWheelZoom={false} 
+                            style={{ height: '100%' }}>
+                            <TileLayer
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            />
+                            <Marker 
+                                position={[7.03285, 125.49727]}
+
+                            />
+                            
+                        </MapContainer> 
+                        
+                        <Space h= "xl" />
+                        
                         <Paper radius="xs" pl={10} pr={40} py={5} withBorder >
                             <Text fz="xl" fw={500}>Report Details </Text>
                             <Divider my="xs" size="xs" color="dark.7"/>
