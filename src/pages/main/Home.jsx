@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Drawer, Flex, Group, Stack, Text } from '@mantine/core';
+import { ActionIcon, Button, Drawer, Flex, Group, Modal, Stack, Text } from '@mantine/core';
 import { IconBell, IconMap2, IconPower } from '@tabler/icons';
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -51,7 +51,7 @@ function StatusIndicator({ data, latLang, close }) {
             <Stack>
                 <Stack align="center" p="xl" px={50} spacing={10}>
                     <Stack spacing="sm">
-                        <Text fz={20} fw="bold">Status: {data.status}</Text>
+                        <Text color='blue' fz={20} fw="bold">Status: {data.status}</Text>
                         <Text fz="xs">Experiencing problems on your area?</Text>
                     </Stack>
                     <Button 
@@ -59,7 +59,11 @@ function StatusIndicator({ data, latLang, close }) {
                             navigate('/report')}
                         }
                         variant="gradient" radius="xl" fullWidth>Report interruption</Button>
-                    <Button radius="xl" variant="outline" fullWidth>Check status history</Button>
+                    <Button 
+                    onClick={() => {
+                        navigate('/history')}
+                    }
+                    radius="xl" variant="outline" fullWidth>Check status history</Button>
                 </Stack>
                 <Text fz={10} fs="italic">Last updated: 10/17/2022</Text>
             </Stack>
@@ -71,8 +75,36 @@ export default function () {
     const [locationStatus, setLocationStatus] = useState(null);
     const [latLang, setLatLang] = useState(null);
     const navigate = useNavigate()
+    const [opened, setOpened] = useState(false)
 
     return (
+        <>
+
+        <Modal
+            opened={opened}
+            zIndex={99999}
+            onClose={()=> setOpened(false)}
+            title="Are you sure you want to logout?">
+                <Group>
+                    <Button
+                        onClick={() => {
+                            navigate('/login')}
+                        }
+                        radius="xl"
+                        color='red'
+                        fullWidth>Yes, log me out
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            setOpened(false)}
+                        }
+                        radius="xl"
+                        variant="outline" color='red'
+                        fullWidth>No, take me back
+                    </Button>
+                </Group>
+        </Modal>
+
         <Stack my="auto" h="100%" spacing={0}>
             <Stack p="md">
                 <Group position='apart'>
@@ -86,12 +118,16 @@ export default function () {
                         </Flex>
                     </Group>
                     <Group>
-                        <ActionIcon color='blue' size="lg">
+                        <ActionIcon 
+                            onClick={() => {
+                                navigate('/notifications')}
+                            } 
+                            color='blue' size="lg">
                             <IconBell size={50}/>
                         </ActionIcon>
                         <ActionIcon 
                             onClick={() => {
-                                navigate('/login')}
+                                setOpened(true)}
                             }
                             color='red' size="lg">
                             <IconPower size={50}/>
@@ -130,5 +166,6 @@ export default function () {
                     }} />
             </MapContainer>
         </Stack>
+        </>
     )
 }
