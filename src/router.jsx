@@ -7,7 +7,8 @@ import Home from './pages/main/Home.jsx';
 import Report from './pages/main/Report.jsx';
 import Success from './pages/main/Success.jsx';
 import Register from './pages/main/Register.jsx';
-
+import Notifications from './pages/main/Notifications.jsx';
+import History from './pages/main/History.jsx';
 
 const router = createBrowserRouter([
     {
@@ -23,11 +24,11 @@ const router = createBrowserRouter([
     {
         path: '/',
         element: (
-            <Home />
+            // <Home />
             // Temporarily disabled
-            // <RequireAuth>
-            //     <Home />
-            // </RequireAuth>
+            <RequireAuth>
+                <Home />
+            </RequireAuth>
         )
     },
     {
@@ -40,6 +41,18 @@ const router = createBrowserRouter([
         path: '/success',
         element: (
                 <Success />
+        )
+    },
+    {
+        path: '/notifications',
+        element: (
+                <Notifications />
+        )
+    },
+    {
+        path: '/history',
+        element: (
+                <History />
         )
     },
 ]);
