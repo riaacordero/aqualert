@@ -9,8 +9,10 @@ import Success from './pages/main/Success.jsx';
 import Register from './pages/main/Register.jsx';
 import Notifications from './pages/main/Notifications.jsx';
 import History from './pages/main/History.jsx';
+import WebAdmin from './pages/admin/WebAdmin.jsx';
 
 const router = createBrowserRouter([
+   
     {
         path: '/login',
         element: <Login />

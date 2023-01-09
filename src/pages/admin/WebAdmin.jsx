@@ -1,33 +1,12 @@
-import { Divider, Space, Flex, Stack, Title, TextInput, Button, Paper, Text, Container, MantineProvider, Group, Table, ScrollArea, Select} from '@mantine/core'
+import { Divider, Space, Flex, Stack, Title, TextInput, Button, Paper, Text,  MantineProvider, Group, Table, ScrollArea, Select} from '@mantine/core'
 import { IconSearch } from '@tabler/icons'
+import { DataTable } from 'mantine-datatable';
 import { useState } from 'react'
 
-const accountDetails = [
-    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Interrupted' },
-    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Interrupted' },
-    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Interrupted' },
-    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Interrupted' },
-    { billAccount: 90000122379, barangay:'Lubogan', district: 'Toril', previousStatus: 'Interrupted' },
-    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Interrupted' },
-    { billAccount: 90000122379, barangay:'Lubogan', district: 'Toril', previousStatus: 'Interrupted' },
-    { billAccount: 90000122379, barangay:'Lubogan', district: 'Toril', previousStatus: 'Interrupted' },
-    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Interrupted' },
-    { billAccount: 90000122379, barangay:'Lubogan', district: 'Toril', previousStatus: 'Interrupted' },
-    { billAccount: 90000122379, barangay:'Lubogan', district: 'Toril', previousStatus: 'Interrupted' },
-    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Interrupted' },
-    { billAccount: 90000122379, barangay:'Lubogan', district: 'Toril', previousStatus: 'Interrupted' },
-   
-  ];
+
 
 export default function() {
-    const rows = accountDetails.map((element) => (
-        <tr key={element.previousStatus}>
-        <td>{element.billAccount}</td>
-        <td>{element.district}</td>
-        <td>{element.barangay}</td>
-        <td>{element.previousStatus}</td>
-        </tr>
-    ));
+   
 
     return (
         <MantineProvider
@@ -36,51 +15,100 @@ export default function() {
                 headings: { fontFamily: 'Poppins, sans-serif' }
             }}>
             
-            <Container mx={80} py={60} px={0} h="100%">
+            {/* <Container mx={80} py={60} px={0} h="100%"> */}
+            <Group mx={80} py={60} px={0} h="100%">
+           
                 <Flex
                     direction='row'
                     gap= 'xl'
                     w='100%'
                     h='100%'
+                    
                     >
                     
-                    
-                    
-                    <Stack my="auto" h="100%" spacing={0}>
+                    <Stack  my="auto" h="100%" spacing={0} >
                         <Title order={2}> Welcome to Aqualert! </Title>
                         <Text fz="sm"> Monitor interruptions all over the city through is your admin dashboard. </Text>
                         <Space h= "xs" />
-                        <Group position="apart" >
+
+                        <Group grow >
                             <TextInput
                                 placeholder="Search for barangay..."
                                 mt= "lg"
-                                icon={<IconSearch size={16} />}
-                                size="md"
+                                icon={<IconSearch size={14} />}
+                                size= "sm"
                                 
                             />
                             <Button  mt= "xl"  radius="xl" size="md" px={50} >Print History</Button>
                         </Group>
+
                         <Space h= "xl" />
                         
                         <ScrollArea style={{ height: 400 }} scrollHideDelay={0}>
-                            <Table withBorder verticalSpacing="sm" horizontalSpacing="xl"  mt= "lg">
-                            <thead >
-                                <tr>
-                                <th>Billing Account No.</th>
-                                <th>Barangay</th>
-                                <th>District</th>
-                                <th>Previous Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>{rows}</tbody>
-                            </Table>
+                            <DataTable
+                                withBorder
+                                borderRadius="sm"
+                                withColumnBorders
+                                striped
+                                highlightOnHover
+                                
+                                // provide data
+                                records= {[
+                                    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Interrupted' },
+                                    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Interrupted' },
+                                    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Good' },
+                                    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Good' },
+                                    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Good' },
+                                    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Good' },
+                                    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Good' },
+                                    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Good' },
+                                    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Good' },
+                                    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Good' },
+                                    { billAccount: 90000122379, barangay: 'Lubogan', district: 'Toril', previousStatus: 'Good' },
+                                    // more records...
+                                ]}
+                                // define columns
+                                columns={[
+                                        {
+                                            accessor: 'billAccount',
+                                            // this column has a custom title
+                                            title: 'Billing Account No.',
+                                            // right-align column
+                                            textAlignment: 'left',
+                                        },
+                                        { 
+                                            accessor: 'barangay' ,
+                                            title: 'Barangay'
+                                        },
+                                        {
+                                            accessor: 'district',
+                                            title: 'District'
+                                        },
+                                        {
+                                            accessor: 'previousStatus',
+                                            title: 'Previous Status',
+                                            // this column has custom cell data rendering
+                                            render: ({ previousStatus }) => (
+                                                <Text weight={700} color={previousStatus === 'Good' ? 'blue' : 'red'}>
+                                                {previousStatus.toUpperCase()}
+                                                </Text>
+                                            ),
+                                        }
+                                    ]}
+                                    // execute this callback when a row is clicked
+                                    onRowClick={({ billAccount, previousStatus }) =>
+                                    alert(`You clicked on ${billAccount}, ang status mo ay ${previousStatus}`)
+                                    }
+                            />                
                         </ScrollArea>
+                        
+                        
                         
 
                     </Stack >
                     
                        
-                    <Stack pl={30} my="auto" h="100%" spacing={0}>
+                    <Stack pl={30} spacing={0} mx={70}>
                         <Paper radius="xs" pl={10} pr={40} py={5} withBorder >
                             <Flex direction="row" gap='sm'  wrap="wrap">
                                 <Text fz="md" fw={500}>Selected Barangay: </Text>
@@ -93,7 +121,7 @@ export default function() {
 
                         <Paper radius="xs" pl={10} pr={40} py={5} withBorder >
                             <Text fz="xl" fw={500}>Report Details </Text>
-                            <Divider my="xs" size="sm"/>
+                            <Divider my="xs" size="xs" color="dark.7"/>
 
                             <Stack spacing={0}>
                                
@@ -144,7 +172,8 @@ export default function() {
                 
 
                 </Flex>
-            </Container>
+            </Group>
+            {/* </Container> */}
 
         </MantineProvider>
         
