@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Flex, Image, Stack, Title, TextInput, Button, PasswordInput, Checkbox } from '@mantine/core'
+import { Modal, Container, Flex, Image, Stack, Title, TextInput, Button, PasswordInput, Checkbox } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context'
 import { useForm } from '@mantine/form'
@@ -18,6 +18,8 @@ export default function () {
     })
 
     return (
+
+
         <Container my="auto" size={400} h="100%">
             <Flex
                 direction='column'

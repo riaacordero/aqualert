@@ -24,10 +24,10 @@ export default function () {
                         onClick={() => {
                             navigate('/')}
                         }
-                        color='blue'size={50}>
+                        color='blue' size={50}>
                         <IconArrowLeft size='xl' />
                     </ActionIcon>
-                    <Title size={25}>Report Interruption</Title>
+                    <Title color='blue' size={25}>Report Interruption</Title>
                 </Group>
                 <Text fz='sm'>Thank you for reporting your area. We would like to know more about what happened. Please fill up the form below with the details of your current water situation.</Text>
                 <form onSubmit={form.onSubmit((values) => console.log(values))}>

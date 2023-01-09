@@ -20,7 +20,7 @@ export default function() {
                     width={300}
                     sx={{ alignSelf: 'center' }} 
                     src='./assets/report-send.png'/>
-                <Title fz={25}>Report Submitted!</Title>
+                <Title color='blue'  fz={28}>Report Submitted!</Title>
                 <Text fz='xs' px='sm'>
                 Your report has been sent to Aqualert's admin system. In the meantime, please check your app from time to time for updates on your status.
                 </Text>
