@@ -48,6 +48,9 @@ export default function () {
                             </Stack>
                             <Stack align='flex-start'>
                                 <Checkbox
+                                     onClick={() => {
+                                        navigate('/webadmin')}
+                                    }
                                     mt='md'
                                     label="Log me in as an admin"
                                     {...form.getInputProps('isAdmin', {type: 'checkbox'})}

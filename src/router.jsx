@@ -24,6 +24,12 @@ const router = createBrowserRouter([
         )
     },
     {
+        path: '/webadmin',
+        element: (
+                <WebAdmin />
+        )
+    },
+    {
         path: '/',
         element: (
             // <Home />
