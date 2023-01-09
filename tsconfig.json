@@ -1,9 +1,21 @@
 {
     "compilerOptions": {
         "checkJs": true,
-        "jsx": "react",
-        "outFile": "out.js",
-        "esModuleInterop": true
+        "target": "ESNext",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "module": "ESNext",
+        "useDefineForClassFields": true,
+        "allowJs": true,
+        "skipLibCheck": true,
+        "esModuleInterop": false,
+        "allowSyntheticDefaultImports": true,
+        "strict": false,
+        "forceConsistentCasingInFileNames": true,
+        "moduleResolution": "Node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "jsx": "react-jsx"
     },
     "typeAcquisition": {
         "enable": true
