@@ -36,18 +36,21 @@ export default function () {
                     <Title color={"#04294F"} fz={30}>Welcome to Aqualert!</Title>
                     Checking on your water supply has never been this easy.
                 </Stack>
-                    {/* !! FORMS HERE !! */}
-                    <form onSubmit={form.onSubmit((values) => console.log(values))}>
-                    <Stack spacing="xs">
-                        <TextInput placeholder="Email address" />
-                        <PasswordInput placeholder="Password" />
+                {/* !! FORMS HERE !! */}
+                <form onSubmit={form.onSubmit((values) => console.log(values))}>
+                <Stack spacing="xs">
+                    <TextInput placeholder="Email address" />
+                    <PasswordInput placeholder="Password" />
+                    <Stack align='flex-start'>
                         <Checkbox
                             mt='md'
-                            label="I am an admin"
+                            label="Log me in as an admin"
                             {...form.getInputProps('isAdmin', {type: 'checkbox'})}
                         />
                     </Stack>
-                    </form>
+                    
+                </Stack>
+                </form>
                 <Stack spacing="xs">
                     <Button type="submit"
                         onClick={() => {

@@ -50,15 +50,14 @@ function StatusIndicator({ data, latLang, close }) {
             })}>
             <Stack align="center" p="xl" spacing="lg">
                 <Stack spacing="sm">
-                    <Text fz="xl" fw="bold">Status: {data.status}</Text>
+                    <Text fz={20} fw="bold">Status: {data.status}</Text>
                     <Text fz="xs">Experiencing problems on your area?</Text>
                 </Stack>
 
                 <Stack>
                     <Button 
                         onClick={() => {
-                            auth.signin('test', () => {navigate('/Report')})
-                            }
+                            navigate('/report')}
                         }
                         variant="gradient" radius="xl" fullWidth>Report interruption</Button>
                     <Button radius="xl" variant="outline" fullWidth>Check status history</Button>

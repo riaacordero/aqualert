@@ -1,23 +1,61 @@
-import { ActionIcon, Flex, Group, Text, Stack, Title } from '@mantine/core';
-import { IconArrowBack, IconArrowLeft, IconMap2 } from '@tabler/icons';
-import { useCallback, useEffect, useState } from 'react';
 import React from 'react';
+import { ActionIcon, Container, Button, Group, Text, Stack, Title, Textarea } from '@mantine/core';
+import { DatePicker } from '@mantine/dates';
+import { useForm } from '@mantine/form';
+import { IconArrowLeft, IconSend } from '@tabler/icons';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context';
 
-export default function (){
+export default function () {
+    const navigate = useNavigate()
+    const auth = useAuth()
+    const form = useForm({
+        initialValues: {
+            interruptDate: '',
+            complaintMsg: ''
+        }
+    })
 
-    return(
-        <Stack>
-            <Group>
-                <ActionIcon size={100}>
-                    <IconArrowLeft size={50} />
-                </ActionIcon>
-                <Title color={'04294F'} size={30}>Report Interruption</Title>
-            </Group>
-            <Text fz='sm'>Thank you for reporting your area. We’d like to know more. Kindly share more about the details of the service interruption in your area.</Text>
+    return (
+        <Container my="auto" py={50} px={40} h="100%">
             <Stack>
-
+                <Group>
+                    <ActionIcon 
+                        onClick={() => {
+                            navigate('/')}
+                        }
+                        color='blue'size={50}>
+                        <IconArrowLeft size='xl' />
+                    </ActionIcon>
+                    <Title size={25}>Report Interruption</Title>
+                </Group>
+                <Text fz='sm'>Thank you for reporting your area. We would like to know more about what happened. Please fill up the form below with the details of your current water situation.</Text>
+                <Stack>
+                    <DatePicker
+                        placeholder='Select date' label='No water since'
+                        withAsterisk />
+                    <Textarea
+                        placeholder='Tell us more about what happened...' label='Complaint details' withAsterisk
+                        minRows={10}
+                        maxRows={20} />
+                </Stack>
+                <Button type="submit"
+                    onClick={() => {
+                        navigate('/success')}
+                    }
+                    variant="gradient" fullWidth radius="xl" size="md">
+                        <ActionIcon>
+                            <IconSend color='white'/>
+                        </ActionIcon>Submit
+                </Button>
+                <Button 
+                    onClick={() => {
+                        navigate('/')}
+                    }
+                    fullWidth variant="outline" radius="xl" size="md">Cancel
+                </Button>
             </Stack>
-        </Stack>
+        </Container>
 
     )
 }
