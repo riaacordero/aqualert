@@ -1,11 +1,21 @@
-import { MantineProvider, Container, Flex, Image, Stack, Title, TextInput, Button, PasswordInput, Checkbox } from '@mantine/core'
+import React from 'react'
+import { Container, Flex, Image, Stack, Title, TextInput, Button, PasswordInput, Checkbox } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context'
-import React from 'react'
+import { useForm } from '@mantine/form'
 
 export default function () {
     const navigate = useNavigate()
     const auth = useAuth()
+    const form = useForm({
+        initialValues:{
+            email: '',
+            isAdmin: false
+        },
+        validate:{
+            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+        },
+    })
 
     return (
         <Container my="auto" size={400} h="100%">
@@ -26,13 +36,20 @@ export default function () {
                     <Title color={"#04294F"} fz={30}>Welcome to Aqualert!</Title>
                     Checking on your water supply has never been this easy.
                 </Stack>
+                    {/* !! FORMS HERE !! */}
+                    <form onSubmit={form.onSubmit((values) => console.log(values))}>
+                    <Stack spacing="xs">
+                        <TextInput placeholder="Email address" />
+                        <PasswordInput placeholder="Password" />
+                        <Checkbox
+                            mt='md'
+                            label="I am an admin"
+                            {...form.getInputProps('isAdmin', {type: 'checkbox'})}
+                        />
+                    </Stack>
+                    </form>
                 <Stack spacing="xs">
-                    <TextInput placeholder="username" />
-                    <PasswordInput placeholder="password" />
-                    <Checkbox radius="xl" label="I am an admin"/>
-                </Stack>
-                <Stack spacing="xs">
-                    <Button 
+                    <Button type="submit"
                         onClick={() => {
                             auth.signin('test', () => {navigate('/')})
                             }
