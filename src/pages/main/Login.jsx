@@ -39,15 +39,19 @@ export default function () {
                 {/* !! FORMS HERE !! */}
                 <form onSubmit={form.onSubmit((values) => console.log(values))}>
                     <Stack spacing="xs">
-                        <TextInput placeholder="Email address" />
-                        <PasswordInput placeholder="Password" />
-                        <Stack align='flex-start'>
-                            <Checkbox
-                                mt='md'
-                                label="Log me in as an admin"
-                                {...form.getInputProps('isAdmin', {type: 'checkbox'})}
-                            />
-                        </Stack>                    
+                        <Stack py='md'>
+                            <Stack>
+                                <TextInput placeholder="Email address" />
+                                <PasswordInput placeholder="Password" />
+                            </Stack>
+                            <Stack align='flex-start'>
+                                <Checkbox
+                                    mt='md'
+                                    label="Log me in as an admin"
+                                    {...form.getInputProps('isAdmin', {type: 'checkbox'})}
+                                />
+                            </Stack>  
+                        </Stack>                  
                     </Stack>
                     <Stack spacing="xs">
                         <Button type="submit"

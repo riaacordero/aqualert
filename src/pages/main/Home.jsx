@@ -1,5 +1,5 @@
 import { ActionIcon, Button, Drawer, Flex, Group, Stack, Text } from '@mantine/core';
-import { IconBell, IconMap2, IconNotification } from '@tabler/icons';
+import { IconBell, IconMap2, IconPower } from '@tabler/icons';
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useCallback, useEffect, useState } from 'react';
@@ -48,21 +48,20 @@ function StatusIndicator({ data, latLang, close }) {
             sx={(theme) => ({
                 textAlign: 'center'
             })}>
-            <Stack align="center" p="xl" spacing="lg">
-                <Stack spacing="sm">
-                    <Text fz={20} fw="bold">Status: {data.status}</Text>
-                    <Text fz="xs">Experiencing problems on your area?</Text>
-                </Stack>
-
-                <Stack>
+            <Stack>
+                <Stack align="center" p="xl" px={50} spacing={10}>
+                    <Stack spacing="sm">
+                        <Text fz={20} fw="bold">Status: {data.status}</Text>
+                        <Text fz="xs">Experiencing problems on your area?</Text>
+                    </Stack>
                     <Button 
                         onClick={() => {
                             navigate('/report')}
                         }
                         variant="gradient" radius="xl" fullWidth>Report interruption</Button>
                     <Button radius="xl" variant="outline" fullWidth>Check status history</Button>
-                    <Text fz={10} fs="italic">Last updated: 10/17/2022</Text>
                 </Stack>
+                <Text fz={10} fs="italic">Last updated: 10/17/2022</Text>
             </Stack>
         </Drawer>
     )
@@ -71,6 +70,7 @@ function StatusIndicator({ data, latLang, close }) {
 export default function () {
     const [locationStatus, setLocationStatus] = useState(null);
     const [latLang, setLatLang] = useState(null);
+    const navigate = useNavigate()
 
     return (
         <Stack my="auto" h="100%" spacing={0}>
@@ -85,11 +85,23 @@ export default function () {
                             <Text fz={12}>The location goes here</Text>
                         </Flex>
                     </Group>
-                    <ActionIcon color='blue' size="lg">
-                        <IconBell size={50}/>
-                    </ActionIcon>
+                    <Group>
+                        <ActionIcon color='blue' size="lg">
+                            <IconBell size={50}/>
+                        </ActionIcon>
+                        <ActionIcon 
+                            onClick={() => {
+                                navigate('/login')}
+                            }
+                            color='red' size="lg">
+                            <IconPower size={50}/>
+                        </ActionIcon>
+                    </Group>
                 </Group>
-                <Text fz={10}>Click on the location pin to reveal status</Text>
+                <Group>
+                    <Text fw={600} fz={10}>How-to-use:</Text>
+                    <Text fz={10}>Click on the location pin to reveal status</Text>
+                </Group>
             </Stack>
 
             <MapContainer 
