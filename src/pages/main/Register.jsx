@@ -14,7 +14,7 @@ export default function() {
             isAdmin: false
         },
         validate:{
-            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email')
         },
     })
 
