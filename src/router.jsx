@@ -10,6 +10,7 @@ import Register from './pages/main/Register.jsx';
 import Notifications from './pages/main/Notifications.jsx';
 import History from './pages/main/History.jsx';
 import WebAdmin from './pages/admin/WebAdmin.jsx';
+import WebLogin from './pages/admin/WebLogin.jsx';
 
 const router = createBrowserRouter([
    
@@ -24,9 +25,15 @@ const router = createBrowserRouter([
         )
     },
     {
-        path: '/webadmin',
+        path: '/admin',
         element: (
                 <WebAdmin />
+        )
+    },
+    {
+        path: '/adminlogin',
+        element: (
+                <WebLogin />
         )
     },
     {

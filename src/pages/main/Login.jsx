@@ -45,16 +45,6 @@ export default function () {
                             <Stack>
                                 <TextInput placeholder="Email address" />
                                 <PasswordInput placeholder="Password" />
-                            </Stack>
-                            <Stack align='flex-start'>
-                                <Checkbox
-                                     onClick={() => {
-                                        navigate('/webadmin')}
-                                    }
-                                    mt='md'
-                                    label="Log me in as an admin"
-                                    {...form.getInputProps('isAdmin', {type: 'checkbox'})}
-                                />
                             </Stack>  
                         </Stack>                  
                     </Stack>
@@ -71,6 +61,11 @@ export default function () {
                                 navigate('/register')}
                             }
                         fullWidth variant="outline" radius="xl" size="md">Register</Button>
+                        <Button 
+                            onClick={() => {
+                                navigate('/adminlogin')}
+                            }
+                        td="underline" variant="subtle" color="gray" radius="xl">Login as admin</Button>
                     </Stack>
                 </form>
             </Flex>
