@@ -7,7 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { db } from '../../firebase';
 import { addDoc, collection } from 'firebase/firestore';
 // import { useAuth } from '../../context';
-
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import {auth} from "../../firebase"
 
 export default function() {
     
@@ -48,9 +49,25 @@ export default function() {
                 <Text>Help us get to know you, fill out the registration form below!</Text>
                 <form onSubmit={form.onSubmit(async (values) => {
                     const dbRef = collection(db, "users")
-                    await addDoc(dbRef, values)
-                    // add user added succesfuly prompt
+                    await addDoc(dbRef, values) // add user added succesfuly prompt
+
+                    //Add create user with email and password
+
+                    createUserWithEmailAndPassword(auth, values.email, values.password)
+                    .then((userCredential) => {
+                        // Signed in 
+                        const user = userCredential.user;
+                        console.log(user);
+                        // ...
+                    })
+
+
+
                     navigate("/")
+
+
+
+
                 })}>
                     <Stack>
                         <TextInput
