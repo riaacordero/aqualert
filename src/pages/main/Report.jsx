@@ -5,6 +5,8 @@ import { useForm } from '@mantine/form';
 import { IconArrowLeft, IconSend } from '@tabler/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '../../firebase';
 
 export default function () {
     const navigate = useNavigate()
@@ -13,6 +15,9 @@ export default function () {
         initialValues: {
             interruptDate: '',
             complaintMsg: ''
+        },
+        validate:{
+            complaintMsg: (value) => value.length > 1 ? null : 'Cannot leave blank',
         }
     })
 
@@ -30,21 +35,23 @@ export default function () {
                     <Title color='blue' size={25}>Report Interruption</Title>
                 </Group>
                 <Text fz='sm'>Thank you for reporting your area. We would like to know more about what happened. Please fill up the form below with the details of your current water situation.</Text>
-                <form onSubmit={form.onSubmit((values) => console.log(values))}>
+                <form onSubmit={form.onSubmit(async(values) => {
+                    const dbReport = collection(db, "reports")
+                    await addDoc(dbReport, values)
+                    navigate('/success')
+                })}>
                     <Stack py={10}>
                         <DatePicker
                             placeholder='Select date' label='No water since'
-                            withAsterisk />
+                            withAsterisk {...form.getInputProps('interruptDate')}/>
+                            
                         <Textarea
                             placeholder='Tell us more about what happened...' label='Complaint details' withAsterisk
                             minRows={10}
-                            maxRows={20} />
+                            maxRows={20} {...form.getInputProps('complaintMsg')}/>
                     </Stack>
                     <Stack py={50}>
                         <Button type="submit"
-                            onClick={() => {
-                                navigate('/success')}
-                            }
                             variant="gradient" fullWidth radius="xl" size="md">
                                 <ActionIcon>
                                     <IconSend color='white'/>

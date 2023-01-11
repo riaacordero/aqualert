@@ -3,6 +3,9 @@ import { Modal, Container, Flex, Image, Stack, Title, TextInput, Button, Passwor
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context'
 import { useForm } from '@mantine/form'
+import {signInWithEmailAndPassword } from "firebase/auth"
+import {auth} from "../../firebase"
+
 
 export default function () {
     const navigate = useNavigate()
@@ -15,6 +18,7 @@ export default function () {
         validate:{
             email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
         },
+    
     })
 
     return (
@@ -39,7 +43,9 @@ export default function () {
                     Checking on your water supply has never been this easy.
                 </Stack>
                 {/* !! FORMS HERE !! */}
-                <form onSubmit={form.onSubmit((values) => console.log(values))}>
+                <form onSubmit={form.onSubmit((values) => {
+                    
+                })}>
                     <Stack spacing="xs">
                         <Stack py='md'>
                             <Stack>
