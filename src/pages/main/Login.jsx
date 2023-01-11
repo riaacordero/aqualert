@@ -1,25 +1,47 @@
 import React from 'react'
 import { Modal, Container, Flex, Image, Stack, Title, TextInput, Button, PasswordInput, Checkbox } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
+import { useContext, useState } from "react"
 import { useAuth } from '../../context'
 import { useForm } from '@mantine/form'
-import {signInWithEmailAndPassword } from "firebase/auth"
+import { signInWithEmailAndPassword } from 'firebase/auth'
 import {auth} from "../../firebase"
 
-
 export default function () {
-    const navigate = useNavigate()
-    const auth = useAuth()
-    const form = useForm({
-        initialValues:{
-            email: '',
-            isAdmin: false
-        },
-        validate:{
-            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-        },
+    //revealed when there is error
+    const [error, setError] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password,setPassword] = useState("");
     
-    })
+
+    //routing
+    const navigate = useNavigate();
+
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+
+        signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed in 
+          const user = userCredential.user;
+          
+          //check if its working
+          console.log(user)
+
+          //navigate to page
+          navigate("/register")
+     
+        })
+        .catch((error) => {
+          
+          setError(true)
+
+          //check in console
+          console.log("There is an error")
+        
+        });
+    }
 
     return (
 
@@ -43,23 +65,20 @@ export default function () {
                     Checking on your water supply has never been this easy.
                 </Stack>
                 {/* !! FORMS HERE !! */}
-                <form onSubmit={form.onSubmit((values) => {
-                    
-                })}>
+                <form onSubmit={handleLogin}>
                     <Stack spacing="xs">
                         <Stack py='md'>
                             <Stack>
-                                <TextInput placeholder="Email address" />
-                                <PasswordInput placeholder="Password" />
-                            </Stack>  
+                                <TextInput placeholder="Email address" onChange={e => setEmail(e.target.value)} />
+                                <PasswordInput placeholder="Password" onChange={e => setPassword(e.target.value)}/>
+                            </Stack>
+                            
                         </Stack>                  
                     </Stack>
                     <Stack spacing="xs">
+
                         <Button type="submit"
-                            onClick={() => {
-                                auth.signin('test', () => {navigate('/')})
-                                }
-                            }
+                           
                             variant="gradient" fullWidth radius="xl" size="md">Login
                         </Button>
                         <Button 
@@ -72,6 +91,9 @@ export default function () {
                                 navigate('/adminlogin')}
                             }
                         td="underline" variant="subtle" color="gray" radius="xl">Login as admin</Button>
+
+
+
                     </Stack>
                 </form>
             </Flex>
