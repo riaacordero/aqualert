@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth} from 'firebase/auth';
 import { documentId, getFirestore } from 'firebase/firestore';
 import { getDatabase } from 'firebase/database';
 
@@ -20,36 +20,7 @@ const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const database = getDatabase(app);
-// export const firestore = getFirestore(app);
+export const db = getFirestore(app);
 
-// Initialize Firebase
-export default app;
 
-// async function createUser(email, password) {
-//   createUserWithEmailAndPassword (auth, email, password)
-//   .then(userCredential =>{
-//     const user = userCredential.user;
-//     console.log({user});
-//   })
-//   .catch(error => {
-//     const errorCode = error.code;
-//     const errorMessage = error.message;
-//     console.error(`${errorMessage}`);
-//   })
-// }
 
-// async function Register( {
-//   firstName = document.getElementById('firstName').value
-//   middleName = document.getElementById('middleName').value
-//   lastName = document.getElementById('lastName').value
-//   emailAd = document.getElementById('email').value
-//   password = document.getElementById('password').value
-// })
-
-// function validate_email(email){
-//   expression = /^[^@]+@\w+(\.\w+)+\w$/
-//   if (expression.test(email) == true){
-//     // Email is true
-//     return true
-//   }
-// }

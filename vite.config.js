@@ -7,5 +7,10 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({ registerType: 'autoUpdate' })
+
   ],
+  optimizeDeps: {
+    exclude: ["firebase", "firebase/app", "firebase/auth", "firebase/firestore", "firebase/analytics", "firebase/storage", "firebase/functions","firebase/database"],
+  }
 })
+
