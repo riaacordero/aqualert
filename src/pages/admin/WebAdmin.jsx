@@ -34,6 +34,7 @@ export default function() {
         .catch(error => console.log(error.message))
     }
 
+    
     return (
         <MantineProvider
             theme={{

@@ -38,7 +38,7 @@ export default function() {
             <Group>
                 <ActionIcon 
                     onClick={() => {
-                        navigate('/login')}
+                        navigate('/')}
                     }
                     color='blue'size={50}>
                     <IconArrowLeft size='xl' />
@@ -63,7 +63,7 @@ export default function() {
 
 
 
-                    navigate("/")
+                    navigate("/home")
                 })}>
                     <Stack>
                         <TextInput
