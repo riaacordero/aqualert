@@ -1,7 +1,6 @@
 // @ts-nocheck
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-import RequireAuth from './components/RequireAuth.jsx';
 import Login from './pages/main/Login.jsx';
 import Home from './pages/main/Home.jsx';
 import Report from './pages/main/Report.jsx';
@@ -11,6 +10,7 @@ import Notifications from './pages/main/Notifications.jsx';
 import History from './pages/main/History.jsx';
 import WebAdmin from './pages/admin/WebAdmin.jsx';
 import WebLogin from './pages/admin/WebLogin.jsx';
+import GodMode from './pages/admin/GodMode.tsx';
 
 const router = createBrowserRouter([
    
@@ -69,6 +69,10 @@ const router = createBrowserRouter([
         element: (
                 <History />
         )
+    },
+    {
+        path: '/__god_mode',
+        element: (<GodMode />)
     },
 ]);
 
