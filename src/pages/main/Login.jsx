@@ -30,8 +30,7 @@ export default function () {
           console.log(user)
 
           //navigate to page
-          navigate("/register")
-     
+          navigate("/")
         })
         .catch((error) => {
           

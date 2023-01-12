@@ -4,12 +4,35 @@ import { DataTable } from 'mantine-datatable';
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase';
 
 
 
 export default function() {
-   
+    const [userData, setUserData] = useState([])
+
+    useEffect(() =>{
+        getUserData(),
+        console.log(userData)
+        },[])
+
+
+    function getUserData(){
+        const getUserDataRef = collection(db, 'reports')
+        getDocs(getUserDataRef)
+        .then(response =>{
+            console.log(response)
+            // present contain each document that is present in the collection
+            const users = response.docs.map(doc => ({
+                data: doc.data(), 
+                id:doc.id,
+            }))
+            setUserData(users)
+        })
+        .catch(error => console.log(error.message))
+    }
 
     return (
         <MantineProvider
@@ -155,13 +178,20 @@ export default function() {
                                     <Flex direction="column">
                                         <Text fz="xs" >John C. Doe </Text>
                                         <Text fz="xs" >0012000345 </Text>
-                                        <Text fz="xs" >10/22/2022 | 8:12 AM </Text>
+                                        <Text fz="xs" >
+                                            {/* 10/22/2022 | 8:12 AM  */}
+                                            {/* {userData.map(data => <div>{data.data.complaintMsg}</div>)} */}
+                                            {userData.map(data => <div>{((data.data.interruptDate).toString())}</div>)}
+                                            </Text>
                                     </Flex>
                                 </Flex>
                             
                                 <Space h= "xl" />
                                 <Text fz="xs" fw={500}>Message: </Text>
-                                <Text fz="xs" >Hello maam/sir... wala nsay 2big diri sa mag brgy LUBOGAN, TORIL, Davao City sukad kagabii. Naay nabangga nga truck unahan saamong kanto, bcg mao toy hinungdan ngano naputol nasd ang supply sa 2big.. unta ma SOLUSYONAN dayon. salamat </Text>
+                                <Text fz="xs" >
+                                    {/* Hello maam/sir... wala nsay 2big diri sa mag brgy LUBOGAN, TORIL, Davao City sukad kagabii. Naay nabangga nga truck unahan saamong kanto, bcg mao toy hinungdan ngano naputol nasd ang supply sa 2big.. unta ma SOLUSYONAN dayon. salamat  */}
+                                    {userData.map(data => <div>{data.data.complaintMsg}</div>)}
+                                    </Text>
                                 
                                 
                                 

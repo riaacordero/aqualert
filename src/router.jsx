@@ -39,11 +39,11 @@ const router = createBrowserRouter([
     {
         path: '/',
         element: (
-            // <Home />
+            <Home />
             // Temporarily disabled
-            <RequireAuth>
-                <Home />
-            </RequireAuth>
+            // <RequireAuth>
+            //     <Home />
+            // </RequireAuth>
         )
     },
     {
