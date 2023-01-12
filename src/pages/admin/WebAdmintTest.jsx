@@ -63,16 +63,18 @@ export default function() {
                         <Title order={2}> Welcome to Aqualert! </Title>
                         <Text fz="sm"> Monitor interruptions all over the city through is your admin dashboard. </Text>
                         <Space h= "xs" />
-                        <Group position="apart" >
+
+                        <Group grow >
                             <TextInput
                                 placeholder="Search for barangay..."
                                 mt= "lg"
-                                icon={<IconSearch size={16} />}
-                                size="md"
+                                icon={<IconSearch size={14} />}
+                                size= "sm"
                                 
                             />
                             <Button  mt= "xl"  radius="xl" size="md" px={50} >Print History</Button>
                         </Group>
+                        
                         <Space h= "xl" />
                         
                         <ScrollArea style={{ height: 400 }} scrollHideDelay={0}>
