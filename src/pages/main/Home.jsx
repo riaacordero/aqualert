@@ -88,7 +88,7 @@ export default function () {
                 <Group>
                     <Button
                         onClick={() => {
-                            navigate('/login')}
+                            navigate('/n')}
                         }
                         radius="xl"
                         color='red'

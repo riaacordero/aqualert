@@ -26,7 +26,7 @@ export default function() {
                 </Text>
                 <Button 
                     onClick={() => {
-                        navigate('/')}
+                        navigate('/home')}
                     }
                     fullWidth variant="gradient" radius="xl" size="md">Return to Home Screen
                 </Button>

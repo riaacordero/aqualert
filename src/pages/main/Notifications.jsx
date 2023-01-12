@@ -11,7 +11,7 @@ export default function (){
             <Group>
                 <ActionIcon 
                     onClick={() => {
-                        navigate('/')}
+                        navigate('/home')}
                     }
                     color='blue'size={50}>
                     <IconArrowLeft size='xl' />

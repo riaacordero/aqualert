@@ -30,7 +30,7 @@ export default function () {
           console.log(user)
 
           //navigate to page
-          navigate("/")
+          navigate("/home")
         })
         .catch((error) => {
           

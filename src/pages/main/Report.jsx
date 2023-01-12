@@ -27,7 +27,7 @@ export default function () {
                 <Group>
                     <ActionIcon 
                         onClick={() => {
-                            navigate('/')}
+                            navigate('/home')}
                         }
                         color='blue' size={50}>
                         <IconArrowLeft size='xl' />
@@ -59,7 +59,7 @@ export default function () {
                         </Button>
                         <Button 
                             onClick={() => {
-                                navigate('/')}
+                                navigate('/home')}
                             }
                             fullWidth variant="outline" radius="xl" size="md">Cancel
                         </Button>
