@@ -15,7 +15,7 @@ import WebLogin from './pages/admin/WebLogin.jsx';
 const router = createBrowserRouter([
    
     {
-        path: '/login',
+        path: '/',
         element: <Login />
     },
     {
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
         )
     },
     {
-        path: '/',
+        path: '/home',
         element: (
             <Home />
             // Temporarily disabled

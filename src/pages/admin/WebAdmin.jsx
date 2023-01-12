@@ -181,7 +181,7 @@ export default function() {
                                         <Text fz="xs" >
                                             {/* 10/22/2022 | 8:12 AM  */}
                                             {/* {userData.map(data => <div>{data.data.complaintMsg}</div>)} */}
-                                            {userData.map(data => <div>{((data.data.interruptDate).toString())}</div>)}
+                                            {userData.map(data => <div>{((data.data.interruptDate).toDate().toString())}</div>)}
                                             </Text>
                                     </Flex>
                                 </Flex>
