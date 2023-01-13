@@ -88,6 +88,12 @@ export default function() {
                             type = "submit"
                             fullWidth variant="gradient" radius="xl" size="md">Register
                         </Button>
+                        <Button  
+                            onClick={() => {
+                                navigate('/')}
+                            }
+                            fullWidth variant="outline" radius="xl" size="md">Cancel
+                        </Button>
                     </Stack>
                 </form>
             </Stack>

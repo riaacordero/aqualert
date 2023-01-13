@@ -11,6 +11,7 @@ import History from './pages/main/History.jsx';
 import WebAdmin from './pages/admin/WebAdmin.jsx';
 import WebLogin from './pages/admin/WebLogin.jsx';
 import GodMode from './pages/admin/GodMode.tsx';
+import WebAdmintTest from './pages/admin/WebAdmintTest.jsx';
 
 const router = createBrowserRouter([
    

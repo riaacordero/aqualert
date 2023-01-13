@@ -46,6 +46,11 @@ export default function() {
                             navigate('/admin')}
                         }
                     mt= "xl" fullWidth radius="xl" size="md">Login</Button>
+                    <Button 
+                            onClick={() => {
+                                navigate('/')}
+                            }
+                        td="underline" variant="subtle" color="gray" radius="xl">Return to main website</Button>
 
                 </Flex>
             </Container>
