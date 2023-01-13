@@ -26,7 +26,7 @@ export default function() {
                     <Image
                         width= {100}
                         sx={{ alignSelf: 'center' }}
-                        src= "./assets/icon.png"
+                        src= "./assets/aqualert-logo.png"
                         alt= "icon for dp" 
 
                     />
