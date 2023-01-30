@@ -29,7 +29,7 @@ export default function() {
             lastName: (value) => value.length > 1 ? null : 'Cannot leave blank',
             email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
             password: (value) => value.length > 8 ? null : 'Password must have at least 8 characters',
-            billingNo: (value) => value.length == 9 ? null : 'Billing Number is 9 digits long'
+            billingNo: (value) => value.length === 9 ? null : 'Billing Number is 9 digits long'
         },       
     })
     
@@ -48,22 +48,41 @@ export default function() {
             <Stack py={20}>
                 <Text>Help us get to know you, fill out the registration form below!</Text>
                 <form onSubmit={form.onSubmit(async (values) => {
-                    const dbRef = collection(db, "users")
-                    await addDoc(dbRef, values) // add user added succesfuly prompt
-
                     //Add create user with email and password
-
+                    
                     createUserWithEmailAndPassword(auth, values.email, values.password)
                     .then((userCredential) => {
-                        // Signed in 
+                        //Get the user id
+                        const uid = userCredential.user.uid
+
+                        //Data
+                        const data = {
+                            id: uid,
+                            firstName: values.firstName,
+                            middleName: values.middleName,
+                            lastName: values.lastName,
+                            email: values.email,
+                            password: values.password,
+                            billingNo: values.billingNo,
+                            isAdmin: false
+                        };
+
+                        //Add it on users collection 
+                        const dbRef = collection(db, "users")
+                        addDoc(dbRef, data) // add user added succesfuly prompt
+                        
+
+                        // Signed in (Check)
                         const user = userCredential.user;
                         console.log(user);
-                        // ...
+                        
+                        //Route it to Home
+                        navigate("/home")
                     })
-
-
-
-                    navigate("/home")
+                    .catch((error) => {
+                        
+                        alert(error.message)
+                      });
                 })}>
                     <Stack>
                         <TextInput
