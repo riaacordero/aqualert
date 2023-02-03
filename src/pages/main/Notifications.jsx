@@ -1,5 +1,5 @@
 import React from 'react';
-import { Group, ActionIcon, Title, Container  } from '@mantine/core'
+import { Group, ActionIcon, Title, Container, Stack  } from '@mantine/core'
 import { useNavigate } from 'react-router-dom';
 import { IconArrowLeft } from '@tabler/icons';
 
@@ -18,6 +18,10 @@ export default function (){
                 </ActionIcon>
                 <Title color='blue' size={25}>Notifications</Title>
             </Group>
+
+            <Stack>
+                {/* TODO: add notification data */}
+            </Stack>
         </Container>
     )
 }

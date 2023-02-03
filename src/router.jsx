@@ -11,18 +11,24 @@ import History from './pages/main/History.jsx';
 import WebAdmin from './pages/admin/WebAdmin.jsx';
 import WebLogin from './pages/admin/WebLogin.jsx';
 import GodMode from './pages/admin/GodMode.tsx';
+import GuestOnly from './components/GuestOnly';
+import RequireAuth from './components/RequireAuth.jsx';
 import WebAdmintTest from './pages/admin/WebAdmintTest.jsx';
 
 const router = createBrowserRouter([
    
     {
         path: '/',
-        element: <Login />
+        element: <GuestOnly>
+            <Login />
+        </GuestOnly>
     },
     {
         path: '/register',
         element: (
+            <GuestOnly>
                 <Register />
+            </GuestOnly>
         )
     },
     {
@@ -40,35 +46,41 @@ const router = createBrowserRouter([
     {
         path: '/home',
         element: (
-            <Home />
-            // Temporarily disabled
-            // <RequireAuth>
-            //     <Home />
-            // </RequireAuth>
+            <RequireAuth>
+                <Home />
+            </RequireAuth>
         )
     },
     {
         path: '/report',
         element: (
+            <RequireAuth>
                 <Report />
+            </RequireAuth>
         )
     },
     {
         path: '/success',
         element: (
+            <RequireAuth>
                 <Success />
+            </RequireAuth>
         )
     },
     {
         path: '/notifications',
         element: (
+            <RequireAuth>
                 <Notifications />
+            </RequireAuth>
         )
     },
     {
         path: '/history',
         element: (
+            <RequireAuth>
                 <History />
+            </RequireAuth>
         )
     },
     {

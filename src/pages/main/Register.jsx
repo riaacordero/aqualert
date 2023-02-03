@@ -5,7 +5,7 @@ import { isInRange, useForm } from '@mantine/form';
 import { IconArrowLeft, IconSend } from '@tabler/icons';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../firebase';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 // import { useAuth } from '../../context';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import {auth} from "../../firebase"
@@ -51,38 +51,30 @@ export default function() {
                     //Add create user with email and password
                     
                     createUserWithEmailAndPassword(auth, values.email, values.password)
-                    .then((userCredential) => {
-                        //Get the user id
-                        const uid = userCredential.user.uid
+                        .then(({ user }) => {
+                            //Get the user id
+                            const uid = user.uid
 
-                        //Data
-                        const data = {
-                            id: uid,
-                            firstName: values.firstName,
-                            middleName: values.middleName,
-                            lastName: values.lastName,
-                            email: values.email,
-                            password: values.password,
-                            billingNo: values.billingNo,
-                            isAdmin: false
-                        };
+                            //Data
+                            const data = {
+                                firstName: values.firstName,
+                                middleName: values.middleName,
+                                lastName: values.lastName,
+                                email: values.email,
+                                billingNo: values.billingNo,
+                                isAdmin: false
+                            };
 
-                        //Add it on users collection 
-                        const dbRef = collection(db, "users")
-                        addDoc(dbRef, data) // add user added succesfuly prompt
-                        
+                            //Add it on users collection 
+                            setDoc(doc(db, "users", uid), data) // add user added succesfuly prompt
 
-                        // Signed in (Check)
-                        const user = userCredential.user;
-                        console.log(user);
-                        
-                        //Route it to Home
-                        navigate("/home")
-                    })
-                    .catch((error) => {
-                        
-                        alert(error.message)
-                      });
+                            // // Signed in (Check)
+                            // const user = userCredential.user;
+                            // console.log(user);
+                        })
+                        .catch((error) => {
+                            alert(error.message)
+                        });
                 })}>
                     <Stack>
                         <TextInput

@@ -1,14 +1,12 @@
 import React from 'react'
-import { Modal, Container, Flex, Image, Stack, Title, TextInput, Button, PasswordInput, Checkbox } from '@mantine/core'
+import { Container, Flex, Image, Stack, Title, TextInput, Button, PasswordInput } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
-import { useContext, useState } from "react"
+import { useState } from "react"
 import { useAuth } from '../../context'
-import { useForm } from '@mantine/form'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import {auth} from "../../firebase"
 
 export default function () {
     //revealed when there is error
+    const { signin } = useAuth();
     const [error, setError] = useState(false);
     const [email, setEmail] = useState("");
     const [password,setPassword] = useState("");
@@ -17,29 +15,13 @@ export default function () {
     //routing
     const navigate = useNavigate();
 
-
     const handleLogin = (e) => {
         e.preventDefault();
 
-        signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          // Signed in 
-          const user = userCredential.user;
-          
-          //check if its working
-          console.log(user)
-
-          //navigate to page
-          navigate("/home")
-        })
-        .catch((error) => {
-          
-          setError(true)
-
-          //check in console
-          console.log("There is an error")
-        
-        });
+        signin({ email, password })
+            .catch((error) => {
+                setError(true)
+            });
     }
 
     return (

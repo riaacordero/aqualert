@@ -5,12 +5,13 @@ import { useForm } from '@mantine/form';
 import { IconArrowLeft, IconSend } from '@tabler/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, doc, documentId, getDoc, query, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 export default function () {
     const navigate = useNavigate()
-    const auth = useAuth()
+    const {user} = useAuth()
+
     const form = useForm({
         initialValues: {
             interruptDate: '',
@@ -36,15 +37,15 @@ export default function () {
                 </Group>
                 <Text fz='sm'>Thank you for reporting your area. We would like to know more about what happened. Please fill up the form below with the details of your current water situation.</Text>
                 <form onSubmit={form.onSubmit(async(values) => {
-                    const dbReport = collection(db, "reports")
-                    await addDoc(dbReport, values)
+                    // const billingNo = (await getDoc(doc(db, 'users', user.uid)))?.get('billingNo');
+                    await addDoc(collection(db, "reports"), { ...values, user_id: user.uid })
                     navigate('/success')
                 })}>
                     <Stack py={10}>
                         <DatePicker
                             placeholder='Select date' label='No water since'
-                            withAsterisk {...form.getInputProps('interruptDate')}/>
-                            
+                            withAsterisk {...form.getInputProps('interruptDate')}
+                            maxDate={new Date()} />
                         <Textarea
                             placeholder='Tell us more about what happened...' label='Complaint details' withAsterisk
                             minRows={10}
@@ -55,7 +56,9 @@ export default function () {
                             variant="gradient" fullWidth radius="xl" size="md">
                                 <ActionIcon>
                                     <IconSend color='white'/>
-                                </ActionIcon>Submit
+                                </ActionIcon>
+                                
+                                Submit
                         </Button>
                         <Button 
                             onClick={() => {

@@ -3,7 +3,6 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 import router from './router'
-import { fakeAuthProvider } from './auth'
 import { AuthContext } from './context'
 import './index.css'
 
@@ -15,26 +14,44 @@ import '@fontsource/poppins/500-italic.css';
 import '@fontsource/poppins/600.css';
 import '@fontsource/poppins/600-italic.css';
 
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { auth } from './firebase'
+import { useEffect } from 'react'
+
 function AuthProvider({ children }) {
   let [user, setUser] = React.useState(null);
 
-  let signin = (newUser, callback) => {
-    return fakeAuthProvider.signin(() => {
-      setUser(newUser);
-      callback();
+  let signin = ({ email, password }) => {
+    return new Promise((resolve, reject) => {
+      signInWithEmailAndPassword(auth, email, password)
+        .then(({ user }) => {
+          setUser(user);
+          resolve(user);
+        })
+        .catch((error) => {
+          console.log("There is an error");
+          reject(error);
+        });
     });
   };
 
-  let signout = (callback) => {
-    return fakeAuthProvider.signout(() => {
-      setUser(null);
-      callback();
-    });
+  let signout = () => {
+    return signOut(auth);
   };
 
-  let value = { user, signin, signout };
+  useEffect(() => {
+    const dispose = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return () => {
+      dispose();
+    }
+  }, []);
+
+  return <AuthContext.Provider value={{ user, signin, signout }}>
+    {children}
+  </AuthContext.Provider>;
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(

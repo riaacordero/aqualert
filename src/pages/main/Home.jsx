@@ -76,6 +76,7 @@ export default function () {
     const [latLang, setLatLang] = useState(null);
     const navigate = useNavigate()
     const [opened, setOpened] = useState(false)
+    const {signout} = useAuth()
 
     return (
         <>
@@ -88,8 +89,8 @@ export default function () {
                 <Group>
                     <Button
                         onClick={() => {
-                            navigate('/')}
-                        }
+                            signout();
+                        }}
                         radius="xl"
                         color='red'
                         fullWidth>Yes, log me out
