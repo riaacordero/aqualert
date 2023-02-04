@@ -1,5 +1,5 @@
 import { ActionIcon, Button, Drawer, Flex, Group, Modal, Stack, Text } from '@mantine/core';
-import { IconBell, IconMap2, IconPower } from '@tabler/icons';
+import { IconBell, IconCrosshair, IconCurrentLocation, IconMap2, IconPower } from '@tabler/icons';
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useCallback, useEffect, useState } from 'react';
@@ -200,7 +200,7 @@ export default function () {
                 <Group position='apart'>
                     <Group>
                         <ActionIcon size="lg" onClick={goToRegisteredLocation}>
-                            <IconMap2 size={50} />
+                            <IconCurrentLocation size={50} />
                         </ActionIcon>
                         <Flex direction='column'>
                             <Text fz={12} fw={600}>{user.rawMetadata.consumer_data?.street_name}</Text>
@@ -225,8 +225,7 @@ export default function () {
                     </Group>
                 </Group>
                 <Group>
-                    <Text fw={600} fz={10}>How-to-use:</Text>
-                    <Text fz={10}>Click on the location pin to reveal status</Text>
+                    <Text fz={10}>Click on the location pin to reveal status. Can't find the pin? Click the button beside your address to zoom to your registered location.</Text>
                 </Group>
             </Stack>
 
@@ -245,18 +244,6 @@ export default function () {
                     eventHandlers={{
                         click: (e) => goToRegisteredLocation()
                     }} />
-
-                {reportData.map((r, idx) => (
-                    <Marker 
-                        key={`r_${r.id}`}
-                        position={[r.latitude, r.longitude]}
-                        eventHandlers={{
-                            click: (e) => {
-                                setLatLang([r.latitude, r.longitude]);
-                                setReport(r);
-                            }
-                        }} />
-                ))}
                 
                 <StatusIndicator 
                     latLang={latLang}

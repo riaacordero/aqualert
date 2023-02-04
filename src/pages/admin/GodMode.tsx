@@ -187,7 +187,7 @@ const consumerData = [
         "longitude": 125.6301036
     },
     {
-        "billing_num": 100000364,
+        "billing_num": 100000365,
         "location_id": 100000019,
         "street_name": "Purok 1B, Luac, Brgy. Bayabas",
         "barangay": "Toril",
