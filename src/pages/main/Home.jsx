@@ -3,7 +3,6 @@ import { IconBell, IconMap2, IconPower } from '@tabler/icons';
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useCallback, useEffect, useState } from 'react';
-import React from 'react';
 import { useAuth } from '../../context'
 import { useNavigate } from 'react-router-dom';
 import { collection, documentId, getDocs, query, QuerySnapshot, where } from 'firebase/firestore';
@@ -56,10 +55,11 @@ function StatusIndicator({ data, latLang, zoom = DEFAULT_ZOOM, close }) {
             })}>
             <Stack>
                 <Stack align="center" p="xl" px={50} spacing={10}>
-                    <Stack spacing="sm">
-                        <Text color='blue' fz={20} fw="bold">Status: {data?.status && STATUS_TYPES[Math.max((data.status ?? 1) - 1, 0)].label}</Text>
-                        <Text fz="xs">Experiencing problems on your area?</Text>
-                    </Stack>
+                    {data?.status && <Stack spacing="sm">
+                        <Text color='blue' fz={20} fw="bold">Status: {STATUS_TYPES[Math.max((data.status ?? 1) - 1, 0)].label}</Text>
+                    </Stack>}
+
+                    <Text fz="xs">Experiencing problems on your area?</Text>
                     <Button 
                         onClick={() => {
                             navigate('/report')}
@@ -71,7 +71,7 @@ function StatusIndicator({ data, latLang, zoom = DEFAULT_ZOOM, close }) {
                     }
                     radius="xl" variant="outline" fullWidth>Check status history</Button>
                 </Stack>
-                <Text fz={10} fs="italic">Last updated: {data?.last_updated && dayjs(data?.last_updated.toDate()).format('MM/DD/YYYY h:mm A')}</Text>
+                {data?.last_updated && <Text fz={10} fs="italic">Last updated: {dayjs(data?.last_updated.toDate()).format('MM/DD/YYYY h:mm A')}</Text>}
             </Stack>
         </Drawer>
     )
@@ -83,7 +83,7 @@ export default function () {
     const [opened, setOpened] = useState(false)
     const {user, signout} = useAuth()
     const [reportData, setReports] = useState([]);
-    const [reportIdx, setReportIdx] = useState(-1);
+    const [report, setReport] = useState(null);
     const [loaded, setLoaded] = useState(false);
 
     /**
@@ -121,35 +121,43 @@ export default function () {
         return Promise.all([usersSnapshot, consumerSnapshot]);
     }
 
-    function getReports() {
-        getDocs(query(collection(db, REPORT_COLLECTION)))
-            .then(response => {
-                return Promise.all([
-                    fetchAssociatedData(response),
-                    response
-                ])
-            })
-            .then(([[usersResponse, consumersResponse], response]) =>{
-                // present contain each document that is present in the collection
-                const mappedReports = response.docs.map(doc => {
-                    const user = usersResponse.docs.find(u => u.id === doc.get('user_id'));
-                    const consumer_data = user ? consumersResponse.docs.find(c => c.id == user.get('billingNo')) : null;
-                    return {
-                        ...consumer_data?.data(),
-                        id: doc.id,
-                        last_updated: doc.get('last_updated')
-                    }
-                });
+    async function getReports() {
+        try {
+            const response = await getDocs(query(collection(db, REPORT_COLLECTION)));
+            const [usersResponse, consumersResponse] = await fetchAssociatedData(response);
 
-                // @ts-ignore
-                setReports(mappedReports.filter(r => r.latitude))
-            })
-            .catch(console.error)
-            .finally(() => {
-                setLoaded(true);
-            })
+            // present contain each document that is present in the collection
+            const mappedReports = response.docs.map(doc => {
+                const user = usersResponse.docs.find(u => u.id === doc.get('user_id'));
+                const consumer_data = user ? consumersResponse.docs.find(c => c.id == user.get('billingNo')) : null;
+                return {
+                    ...consumer_data?.data(),
+                    id: doc.id,
+                    last_updated: doc.get('last_updated')
+                }
+            });
+
+            // @ts-ignore
+            setReports(mappedReports.filter(r => r.latitude))
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoaded(true);
+        }
     }
 
+    const goToRegisteredLocation = () => {
+        setLatLang([
+            user.rawMetadata.consumer_data.latitude,
+            user.rawMetadata.consumer_data.longitude
+        ]);
+
+        const foundReport = reportData.find(r => 
+            r.latitude === user.rawMetadata.consumer_data.latitude && 
+            r.longitude === user.rawMetadata.consumer_data.longitude) ?? {};
+
+        setReport(foundReport);
+    }
 
     useEffect(() => {
         getReports();
@@ -191,12 +199,7 @@ export default function () {
             <Stack p="md">
                 <Group position='apart'>
                     <Group>
-                        <ActionIcon size="lg" onClick={() => {
-                            setLatLang([
-                                user.rawMetadata.consumer_data.latitude,
-                                user.rawMetadata.consumer_data.longitude
-                            ]);
-                        }}>
+                        <ActionIcon size="lg" onClick={goToRegisteredLocation}>
                             <IconMap2 size={50} />
                         </ActionIcon>
                         <Flex direction='column'>
@@ -228,7 +231,7 @@ export default function () {
             </Stack>
 
             {loaded && <MapContainer 
-                center={reportData.length != 0 ? [reportData[0].latitude, reportData[0].longitude] : [7.0471, 125.6702]} 
+                center={reportData.length != 0 ? [reportData[0].latitude, reportData[0].longitude] : [user.rawMetadata.consumer_data.latitude, user.rawMetadata.consumer_data.longitude]} 
                 zoom={DEFAULT_ZOOM} 
                 scrollWheelZoom={true} 
                 style={{ height: '100%' }}>
@@ -237,6 +240,12 @@ export default function () {
                     url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 
+                <Marker 
+                    position={[user.rawMetadata.consumer_data.latitude, user.rawMetadata.consumer_data.longitude]}
+                    eventHandlers={{
+                        click: (e) => goToRegisteredLocation()
+                    }} />
+
                 {reportData.map((r, idx) => (
                     <Marker 
                         key={`r_${r.id}`}
@@ -244,7 +253,7 @@ export default function () {
                         eventHandlers={{
                             click: (e) => {
                                 setLatLang([r.latitude, r.longitude]);
-                                setReportIdx(idx);
+                                setReport(r);
                             }
                         }} />
                 ))}
@@ -252,10 +261,10 @@ export default function () {
                 <StatusIndicator 
                     latLang={latLang}
                     zoom={latLang ? 16 : DEFAULT_ZOOM}
-                    data={reportIdx !== -1 ? reportData[reportIdx] : null}
+                    data={report}
                     close={() => {
                         setLatLang(null);
-                        setReportIdx(-1);
+                        setReport(null);
                     }} />
             </MapContainer>}
         </Stack>
