@@ -9,6 +9,7 @@ import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 // import { useAuth } from '../../context';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import {auth} from "../../firebase"
+import { USER_COLLECTION } from '../../collection_constants';
 
 export default function() {
     
@@ -66,7 +67,7 @@ export default function() {
                             };
 
                             //Add it on users collection 
-                            setDoc(doc(db, "users", uid), data) // add user added succesfuly prompt
+                            setDoc(doc(db, USER_COLLECTION, uid), data) // add user added succesfuly prompt
 
                             // // Signed in (Check)
                             // const user = userCredential.user;

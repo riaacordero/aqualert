@@ -38,7 +38,7 @@ export default function () {
                 <Text fz='sm'>Thank you for reporting your area. We would like to know more about what happened. Please fill up the form below with the details of your current water situation.</Text>
                 <form onSubmit={form.onSubmit(async(values) => {
                     // const billingNo = (await getDoc(doc(db, 'users', user.uid)))?.get('billingNo');
-                    await addDoc(collection(db, "reports"), { ...values, user_id: user.uid })
+                    await addDoc(collection(db, "reports"), { ...values, user_id: user.rawUser.uid })
                     navigate('/success')
                 })}>
                     <Stack py={10}>

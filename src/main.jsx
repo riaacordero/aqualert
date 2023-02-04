@@ -15,22 +15,68 @@ import '@fontsource/poppins/600.css';
 import '@fontsource/poppins/600-italic.css';
 
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
-import { auth } from './firebase'
+import { auth, db } from './firebase'
 import { useEffect } from 'react'
+import { doc, getDoc } from 'firebase/firestore'
+import { BARANGAY_COLLECTION, CONSUMER_DATA_COLLECTION, USER_COLLECTION } from './collection_constants'
 
 function AuthProvider({ children }) {
   let [user, setUser] = React.useState(null);
 
+  /**
+   * 
+   * @param {Promise<import('firebase/auth').User>} userPromise 
+   */
+  const injectUser = (userPromise) => {
+    // TODO: refactor it later
+    return userPromise
+      .then((user) => {
+        return Promise.all([
+          getDoc(doc(db, USER_COLLECTION, user.uid)),
+          user
+        ]);
+      })
+      .then(([usersSnapshot, user]) => {
+        return Promise.all([
+          getDoc(doc(db, CONSUMER_DATA_COLLECTION, usersSnapshot.get('billingNo'))),
+          usersSnapshot,
+          user
+        ]);
+      })
+      .then(([consumerDataSnap, userSnap, user]) => {
+        return Promise.all([
+          getDoc(doc(db, BARANGAY_COLLECTION, consumerDataSnap.get('barangay_id'))),
+          consumerDataSnap,
+          userSnap,
+          user
+        ]);
+      })
+      .then(([barangaySnap, consumerDataSnap, userSnap, user]) => {
+        const finalUser = {
+          rawUser: user,
+          rawMetadata: {
+            consumer_data: consumerDataSnap.data(),
+            barangay: barangaySnap.data(),
+            user_info: userSnap.data()
+          }
+        };
+        setUser(finalUser);
+        return finalUser;
+      });
+  }
+
   let signin = ({ email, password }) => {
     return new Promise((resolve, reject) => {
-      signInWithEmailAndPassword(auth, email, password)
-        .then(({ user }) => {
-          setUser(user);
+      injectUser(
+        signInWithEmailAndPassword(auth, email, password)
+          .then(({user}) => user)
+      )
+        .then(user => {
           resolve(user);
         })
         .catch((error) => {
-          console.log("There is an error");
-          reject(error);
+          console.log("There is an error", error);
+          reject(error)
         });
     });
   };
@@ -41,7 +87,10 @@ function AuthProvider({ children }) {
 
   useEffect(() => {
     const dispose = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+      injectUser(Promise.resolve(user))
+        .catch((error) => {
+          console.log("There is an error", error);
+        });
     });
 
     return () => {

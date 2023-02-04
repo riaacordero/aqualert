@@ -10,6 +10,7 @@ import { db } from '../../firebase';
 import dayjs from 'dayjs';
 import { STATUS_TYPES } from '../../utils';
 import { useForm } from '@mantine/form';
+import { BARANGAY_COLLECTION, CONSUMER_DATA_COLLECTION, USER_COLLECTION } from '../../collection_constants';
 
 export default function() {
     const [reports, setReports] = useState([]);
@@ -46,7 +47,7 @@ export default function() {
     function fetchBarangayData(snapshot) {
         const barangayIds = [...new Set(snapshot.docs.map(doc => doc.get('barangay_id')).filter(Boolean))];
         return getDocs(query(
-            collection(db, 'barangays'), 
+            collection(db, BARANGAY_COLLECTION), 
             where(documentId(), 'in', barangayIds)
         ))
     }
@@ -59,7 +60,7 @@ export default function() {
         const billingNos = [...new Set(snapshot.docs.map(doc => doc.get('billingNo')).filter(Boolean))];
   
         return getDocs(query(
-            collection(db, 'consumer_data'), 
+            collection(db, CONSUMER_DATA_COLLECTION), 
             where(documentId(), 'in', billingNos)
         ))
     }
@@ -71,7 +72,7 @@ export default function() {
     function fetchUserData(snapshot) {
         const userIds = [...new Set(snapshot.docs.map(doc => doc.get('user_id')).filter(Boolean))];
         return getDocs(query(
-            collection(db, 'users'), 
+            collection(db, USER_COLLECTION), 
             where(documentId(), 'in', userIds)
         ))
     }
@@ -119,8 +120,8 @@ export default function() {
     }
 
     async function changeStatus(report, newStatus) {
-        console.log({newStatus});   
         await updateDoc(doc(db, 'consumer_data', report.user.billingNo), { status: newStatus });
+        await updateDoc(doc(db, 'reports', report.id), { last_updated: new Date() });
         // TODO: add notifications collection 
         // await addDoc(collection(db, 'notifications'), {
         //     user_id: report.user_id,

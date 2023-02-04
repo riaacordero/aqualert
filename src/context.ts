@@ -1,5 +1,10 @@
-import { User } from "firebase/auth";
+import { User as FirebaseUser } from "firebase/auth";
 import { createContext, useContext } from "react";
+
+interface User {
+    rawUser: FirebaseUser,
+    rawMetadata: Record<string, any>
+}
 
 interface AuthContextData {
     user: User

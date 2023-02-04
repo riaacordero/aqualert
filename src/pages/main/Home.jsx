@@ -6,26 +6,32 @@ import { useCallback, useEffect, useState } from 'react';
 import React from 'react';
 import { useAuth } from '../../context'
 import { useNavigate } from 'react-router-dom';
+import { collection, documentId, getDocs, query, QuerySnapshot, where } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { STATUS_TYPES } from '../../utils';
+import dayjs from 'dayjs';
+import { CONSUMER_DATA_COLLECTION, REPORT_COLLECTION, USER_COLLECTION } from '../../collection_constants';
 
-function StatusIndicator({ data, latLang, close }) {
+const DEFAULT_ZOOM = 13
+
+function StatusIndicator({ data, latLang, zoom = DEFAULT_ZOOM, close }) {
     const map = useMap();
     const [savedLatLang, setSavedLatLang] = useState(null);
 
     const navigate = useNavigate()
-    const auth = useAuth()
 
     const onClick = useCallback(() => {
         if (!savedLatLang) return;
-        map.panTo([savedLatLang[0], savedLatLang[1]]);
+        map.flyTo([savedLatLang[0], savedLatLang[1]], DEFAULT_ZOOM);
         close();
     }, [map, savedLatLang]);
 
     useEffect(() => {
         if (!latLang) return;
         const x = map.latLngToContainerPoint(latLang).x;
-        const y = map.latLngToContainerPoint(latLang).y + 120
+        const y = map.latLngToContainerPoint(latLang).y + (6 * (zoom * 0.003));
         const point = map.containerPointToLatLng([x, y]);
-        map.panTo(point);
+        map.flyTo(point, zoom);
         setSavedLatLang(latLang);
     }, [map, latLang]);
 
@@ -39,7 +45,7 @@ function StatusIndicator({ data, latLang, close }) {
 
     return (
         <Drawer
-            opened={!!data.status}
+            opened={!!data}
             onClose={close}
             position="bottom"
             zIndex={9999}
@@ -51,7 +57,7 @@ function StatusIndicator({ data, latLang, close }) {
             <Stack>
                 <Stack align="center" p="xl" px={50} spacing={10}>
                     <Stack spacing="sm">
-                        <Text color='blue' fz={20} fw="bold">Status: {data.status}</Text>
+                        <Text color='blue' fz={20} fw="bold">Status: {data?.status && STATUS_TYPES[Math.max((data.status ?? 1) - 1, 0)].label}</Text>
                         <Text fz="xs">Experiencing problems on your area?</Text>
                     </Stack>
                     <Button 
@@ -65,18 +71,93 @@ function StatusIndicator({ data, latLang, close }) {
                     }
                     radius="xl" variant="outline" fullWidth>Check status history</Button>
                 </Stack>
-                <Text fz={10} fs="italic">Last updated: 10/17/2022</Text>
+                <Text fz={10} fs="italic">Last updated: {data?.last_updated && dayjs(data?.last_updated.toDate()).format('MM/DD/YYYY h:mm A')}</Text>
             </Stack>
         </Drawer>
     )
 }
 
 export default function () {
-    const [locationStatus, setLocationStatus] = useState(null);
     const [latLang, setLatLang] = useState(null);
     const navigate = useNavigate()
     const [opened, setOpened] = useState(false)
-    const {signout} = useAuth()
+    const {user, signout} = useAuth()
+    const [reportData, setReports] = useState([]);
+    const [reportIdx, setReportIdx] = useState(-1);
+    const [loaded, setLoaded] = useState(false);
+
+    /**
+     * 
+     * @param {QuerySnapshot<import('firebase/firestore').DocumentData>} snapshot 
+     */
+    function fetchConsumerData(snapshot) {
+        const billingNos = [...new Set(snapshot.docs.map(doc => doc.get('billingNo')).filter(Boolean))];
+  
+        return getDocs(query(
+            collection(db, CONSUMER_DATA_COLLECTION), 
+            where(documentId(), 'in', billingNos)
+        ))
+    }
+
+    /**
+     * 
+     * @param {QuerySnapshot<import('firebase/firestore').DocumentData>} snapshot 
+     */
+    function fetchUserData(snapshot) {
+        const userIds = [...new Set(snapshot.docs.map(doc => doc.get('user_id')).filter(Boolean))];
+        return getDocs(query(
+            collection(db, USER_COLLECTION), 
+            where(documentId(), 'in', userIds)
+        ))
+    }
+
+    /**
+     * 
+     * @param {QuerySnapshot<import('firebase/firestore').DocumentData>} snapshot 
+     */
+    async function fetchAssociatedData(snapshot) {
+        const usersSnapshot = await fetchUserData(snapshot);
+        const consumerSnapshot = await fetchConsumerData(usersSnapshot);
+        return Promise.all([usersSnapshot, consumerSnapshot]);
+    }
+
+    function getReports() {
+        getDocs(query(collection(db, REPORT_COLLECTION)))
+            .then(response => {
+                return Promise.all([
+                    fetchAssociatedData(response),
+                    response
+                ])
+            })
+            .then(([[usersResponse, consumersResponse], response]) =>{
+                // present contain each document that is present in the collection
+                const mappedReports = response.docs.map(doc => {
+                    const user = usersResponse.docs.find(u => u.id === doc.get('user_id'));
+                    const consumer_data = user ? consumersResponse.docs.find(c => c.id == user.get('billingNo')) : null;
+                    return {
+                        ...consumer_data?.data(),
+                        id: doc.id,
+                        last_updated: doc.get('last_updated')
+                    }
+                });
+
+                // @ts-ignore
+                setReports(mappedReports.filter(r => r.latitude))
+            })
+            .catch(console.error)
+            .finally(() => {
+                setLoaded(true);
+            })
+    }
+
+
+    useEffect(() => {
+        getReports();
+    }, []);
+
+    useEffect(() => {
+        console.log(reportData);
+    }, [reportData]);
 
     return (
         <>
@@ -86,36 +167,41 @@ export default function () {
             zIndex={99999}
             onClose={()=> setOpened(false)}
             title="Are you sure you want to logout?">
-                <Group>
-                    <Button
-                        onClick={() => {
-                            signout();
-                        }}
-                        radius="xl"
-                        color='red'
-                        fullWidth>Yes, log me out
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            setOpened(false)}
-                        }
-                        radius="xl"
-                        variant="outline" color='red'
-                        fullWidth>No, take me back
-                    </Button>
-                </Group>
+            <Group>
+                <Button
+                    onClick={() => {
+                        signout();
+                    }}
+                    radius="xl"
+                    color='red'
+                    fullWidth>Yes, log me out
+                </Button>
+                <Button
+                    onClick={() => {
+                        setOpened(false)}
+                    }
+                    radius="xl"
+                    variant="outline" color='red'
+                    fullWidth>No, take me back
+                </Button>
+            </Group>
         </Modal>
 
         <Stack my="auto" h="100%" spacing={0}>
             <Stack p="md">
                 <Group position='apart'>
                     <Group>
-                        <ActionIcon size="lg">
+                        <ActionIcon size="lg" onClick={() => {
+                            setLatLang([
+                                user.rawMetadata.consumer_data.latitude,
+                                user.rawMetadata.consumer_data.longitude
+                            ]);
+                        }}>
                             <IconMap2 size={50} />
                         </ActionIcon>
                         <Flex direction='column'>
-                            <Text fz={12} fw={600}>Registered Location</Text>
-                            <Text fz={12}>The location goes here</Text>
+                            <Text fz={12} fw={600}>{user.rawMetadata.consumer_data?.street_name}</Text>
+                            <Text fz={12}>{user.rawMetadata.barangay?.barangay_name}</Text>
                         </Flex>
                     </Group>
                     <Group>
@@ -141,31 +227,37 @@ export default function () {
                 </Group>
             </Stack>
 
-            <MapContainer 
-                center={[7.03285, 125.49727]} 
-                zoom={20} 
-                scrollWheelZoom={false} 
+            {loaded && <MapContainer 
+                center={reportData.length != 0 ? [reportData[0].latitude, reportData[0].longitude] : [7.0471, 125.6702]} 
+                zoom={DEFAULT_ZOOM} 
+                scrollWheelZoom={true} 
                 style={{ height: '100%' }}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                <Marker 
-                    position={[7.03285, 125.49727]}
-                    eventHandlers={{
-                        click: (e) => {
-                            setLatLang([e.latlng.lat, e.latlng.lng]);
-                            setLocationStatus('Cleared');
-                        }
-                    }} />
+                
+                {reportData.map((r, idx) => (
+                    <Marker 
+                        key={`r_${r.id}`}
+                        position={[r.latitude, r.longitude]}
+                        eventHandlers={{
+                            click: (e) => {
+                                setLatLang([r.latitude, r.longitude]);
+                                setReportIdx(idx);
+                            }
+                        }} />
+                ))}
+                
                 <StatusIndicator 
                     latLang={latLang}
-                    data={{status: locationStatus}}
+                    zoom={latLang ? 16 : DEFAULT_ZOOM}
+                    data={reportIdx !== -1 ? reportData[reportIdx] : null}
                     close={() => {
-                        setLocationStatus(null)
                         setLatLang(null);
+                        setReportIdx(-1);
                     }} />
-            </MapContainer>
+            </MapContainer>}
         </Stack>
         </>
     )
