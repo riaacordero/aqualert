@@ -2,10 +2,27 @@ import { Image, Center, Flex, Stack, Title, TextInput, Button, PasswordInput, Te
 import React from 'react'
 import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context';
 
 export default function() {
+    //revealed when there is error
+    const { signin } = useAuth();
+    const [error, setError] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password,setPassword] = useState("");
+    const [isAdmin, setAdmin] = useState(false);
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+
+        signin({ email, password, isAdmin })
+            .catch((error) => {
+                setError(true)
+            });
+    }
 
     return (
         <MantineProvider
@@ -33,24 +50,23 @@ export default function() {
                     <Title order={4}> Welcome to Aqualert </Title>
                     <Text fz="xs"> Lorem ipsum dolor sit amet consectetur. </Text>
                     
-                    <Stack  mt= "lg" spacing="sm" >
-                        <TextInput 
-                            placeholder= "username"
-                            size= "sm" 
-                        />
-                        <PasswordInput withAsterisk placeholder="password" />
-                    </Stack>
+                    <form onSubmit={handleLogin}>
+                        <Stack  mt= "lg" spacing="sm" >
+                            <TextInput placeholder="Email address" onChange={e => setEmail(e.target.value)} />
+                            <PasswordInput placeholder="Password" onChange={e => setPassword(e.target.value)}/>
+                        </Stack>
 
-                    <Button 
-                        onClick={() => {
-                            navigate('/admin')}
-                        }
-                    mt= "xl" fullWidth radius="xl" size="md">Login</Button>
-                    <Button 
+                        <Button 
                             onClick={() => {
-                                navigate('/')}
+                                navigate('/admin')}
                             }
-                        td="underline" variant="subtle" color="gray" radius="xl">Return to main website</Button>
+                            mt= "xl" fullWidth radius="xl" size="md">Login</Button>
+                        <Button 
+                                onClick={() => {
+                                    navigate('/')}
+                                }
+                            td="underline" variant="subtle" color="gray" radius="xl">Return to main website</Button>
+                    </form>
 
                 </Flex>
             </Container>

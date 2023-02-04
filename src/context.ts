@@ -8,7 +8,7 @@ interface User {
 
 interface AuthContextData {
     user: User
-    signin: (newUser: { email: string, password: string }) => Promise<User>
+    signin: (newUser: { email: string, password: string, isAdmin?: boolean }) => Promise<User>
     signout: () => Promise<void>
 }
 

@@ -27,11 +27,16 @@ function AuthProvider({ children }) {
    * 
    * @param {Promise<import('firebase/auth').User>} userPromise 
    */
-  const injectUser = async (userPromise) => {
+  const injectUser = async (userPromise, isAdmin = false) => {
     const user = await userPromise;
     if (!user) return;
 
     const userSnap = await getDoc(doc(db, USER_COLLECTION, user.uid));
+    if (isAdmin && !userSnap.get('isAdmin')) {
+      await signout();
+      throw new Error('Access is denied.');
+    }
+
     const consumerDataSnap = await getDoc(doc(db, CONSUMER_DATA_COLLECTION, userSnap.get('billingNo')));
     const barangaySnap = await getDoc(doc(db, BARANGAY_COLLECTION, consumerDataSnap.get('barangay_id')));
     const finalUser = {
@@ -47,11 +52,25 @@ function AuthProvider({ children }) {
     return finalUser;
   }
 
-  let signin = ({ email, password }) => {
+  const IS_ADMIN_ENTRY = 'is_admin_login';
+
+  const shouldLoginAsAdmin = (defaultValue = false) => {
+    const valueInString = (+defaultValue).toString() // 1 if true, 0 if false
+    if (!localStorage.getItem(IS_ADMIN_ENTRY) || (defaultValue !== null && localStorage.getItem(IS_ADMIN_ENTRY) !== valueInString)) {
+      localStorage.setItem(IS_ADMIN_ENTRY, valueInString);
+    }
+
+    return localStorage.getItem(IS_ADMIN_ENTRY) === '1';
+  }
+
+  let signin = ({ email, password, isAdmin = false }) => {
     return new Promise((resolve, reject) => {
+      const isAdminEntry = shouldLoginAsAdmin(isAdmin);
+
       injectUser(
         signInWithEmailAndPassword(auth, email, password)
-          .then(({user}) => user)
+          .then(({user}) => user),
+        isAdminEntry
       )
         .then(user => {
           resolve(user);
@@ -65,12 +84,13 @@ function AuthProvider({ children }) {
 
   let signout = async () => {
     await signOut(auth);
+    localStorage.removeItem(IS_ADMIN_ENTRY);
     setUser(null);
   };
 
   useEffect(() => {
     const dispose = onAuthStateChanged(auth, (user) => {
-      injectUser(Promise.resolve(user))
+      injectUser(Promise.resolve(user), shouldLoginAsAdmin(null))
         .catch((error) => {
           console.log("There is an error", error);
         });
