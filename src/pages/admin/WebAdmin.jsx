@@ -187,7 +187,7 @@ export default function() {
                                     title: 'Previous Status',
                                     // this column has custom cell data rendering
                                     render: ({ previousStatus }) => (
-                                        <Text weight={700} color={previousStatus === 'Good' ? 'blue' : 'red'}>
+                                        <Text weight={700} color={STATUS_TYPES.find(s => s.label === previousStatus).color}>
                                         {previousStatus.toUpperCase()}
                                         </Text>
                                     ),
