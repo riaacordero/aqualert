@@ -3,6 +3,7 @@ import { Container, Flex, Image, Stack, Title, TextInput, Button, PasswordInput 
 import { useNavigate } from 'react-router-dom'
 import { useState } from "react"
 import { useAuth } from '../../context'
+import { showNotification } from '@mantine/notifications';
 
 export default function () {
     //revealed when there is error
@@ -20,7 +21,13 @@ export default function () {
 
         signin({ email, password })
             .catch((error) => {
-                setError(true)
+                if (error instanceof Error) {
+                    showNotification({
+                        color: 'red',
+                        title: 'Error',
+                        message: 'Have you created an account? Please check if your email and password is correct. '+error.message
+                    })
+                }
             });
     }
 

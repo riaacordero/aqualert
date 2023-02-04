@@ -5,6 +5,7 @@ import { RouterProvider } from 'react-router-dom'
 import router from './router'
 import { AuthContext } from './context'
 import './index.css'
+import { NotificationsProvider } from '@mantine/notifications'
 
 // fonts
 import '@fontsource/poppins/400.css';
@@ -111,8 +112,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       fontFamily: 'Poppins, sans-serif',
       headings: { fontFamily: 'Poppins, sans-serif' }
   }}>
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
+    <NotificationsProvider>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </NotificationsProvider>
   </MantineProvider>,
 )
