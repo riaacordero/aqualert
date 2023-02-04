@@ -3,6 +3,7 @@ import React from 'react'
 import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context';
+import { showNotification } from '@mantine/notifications';
 
 export default function() {
     //revealed when there is error
@@ -10,17 +11,22 @@ export default function() {
     const [error, setError] = useState(false);
     const [email, setEmail] = useState("");
     const [password,setPassword] = useState("");
-    const [isAdmin, setAdmin] = useState(false);
+    const [isAdmin, setAdmin] = useState(true);
 
     const navigate = useNavigate();
-
 
     const handleLogin = (e) => {
         e.preventDefault();
 
         signin({ email, password, isAdmin })
             .catch((error) => {
-                setError(true)
+                if (error instanceof Error) {
+                    showNotification({
+                        color: 'red',
+                        title: 'Error',
+                        message: "Are you sure you're an admin? Please check if your email and password is correct. "+error.message
+                    })
+                }
             });
     }
 
@@ -56,16 +62,15 @@ export default function() {
                             <PasswordInput placeholder="Password" onChange={e => setPassword(e.target.value)}/>
                         </Stack>
 
-                        <Button 
-                            onClick={() => {
-                                navigate('/admin')}
-                            }
-                            mt= "xl" fullWidth radius="xl" size="md">Login</Button>
+                        <Button type="submit"
+                            mt= "xl" fullWidth radius="xl" size="md">Login
+                        </Button>
                         <Button 
                                 onClick={() => {
                                     navigate('/')}
                                 }
-                            td="underline" variant="subtle" color="gray" radius="xl">Return to main website</Button>
+                            td="underline" variant="subtle" color="gray" radius="xl">Return to main website
+                        </Button>
                     </form>
 
                 </Flex>
