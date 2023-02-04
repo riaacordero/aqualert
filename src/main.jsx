@@ -27,42 +27,24 @@ function AuthProvider({ children }) {
    * 
    * @param {Promise<import('firebase/auth').User>} userPromise 
    */
-  const injectUser = (userPromise) => {
-    // TODO: refactor it later
-    return userPromise
-      .then((user) => {
-        return Promise.all([
-          getDoc(doc(db, USER_COLLECTION, user.uid)),
-          user
-        ]);
-      })
-      .then(([usersSnapshot, user]) => {
-        return Promise.all([
-          getDoc(doc(db, CONSUMER_DATA_COLLECTION, usersSnapshot.get('billingNo'))),
-          usersSnapshot,
-          user
-        ]);
-      })
-      .then(([consumerDataSnap, userSnap, user]) => {
-        return Promise.all([
-          getDoc(doc(db, BARANGAY_COLLECTION, consumerDataSnap.get('barangay_id'))),
-          consumerDataSnap,
-          userSnap,
-          user
-        ]);
-      })
-      .then(([barangaySnap, consumerDataSnap, userSnap, user]) => {
-        const finalUser = {
-          rawUser: user,
-          rawMetadata: {
-            consumer_data: consumerDataSnap.data(),
-            barangay: barangaySnap.data(),
-            user_info: userSnap.data()
-          }
-        };
-        setUser(finalUser);
-        return finalUser;
-      });
+  const injectUser = async (userPromise) => {
+    const user = await userPromise;
+    if (!user) return;
+
+    const userSnap = await getDoc(doc(db, USER_COLLECTION, user.uid));
+    const consumerDataSnap = await getDoc(doc(db, CONSUMER_DATA_COLLECTION, userSnap.get('billingNo')));
+    const barangaySnap = await getDoc(doc(db, BARANGAY_COLLECTION, consumerDataSnap.get('barangay_id')));
+    const finalUser = {
+      rawUser: user,
+      rawMetadata: {
+        consumer_data: consumerDataSnap.data(),
+        barangay: barangaySnap.data(),
+        user_info: userSnap.data()
+      }
+    };
+
+    setUser(finalUser);
+    return finalUser;
   }
 
   let signin = ({ email, password }) => {
@@ -81,8 +63,9 @@ function AuthProvider({ children }) {
     });
   };
 
-  let signout = () => {
-    return signOut(auth);
+  let signout = async () => {
+    await signOut(auth);
+    setUser(null);
   };
 
   useEffect(() => {
