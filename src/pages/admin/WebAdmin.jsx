@@ -4,13 +4,28 @@ import { DataTable } from 'mantine-datatable';
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { addDoc, collection, doc, documentId, getDocs, query, QuerySnapshot, setDoc, updateDoc, where } from 'firebase/firestore';
 import { db } from '../../firebase';
 import dayjs from 'dayjs';
 import { STATUS_TYPES } from '../../utils';
 import { useForm } from '@mantine/form';
 import { BARANGAY_COLLECTION, CONSUMER_DATA_COLLECTION, USER_COLLECTION } from '../../collection_constants';
+
+function Panner({ coords }) {
+    const map = useMap();
+    const defaultCenter = useRef(null);
+
+    useEffect(() => {
+        defaultCenter.current = map.getCenter();
+    }, []);
+
+    useEffect(() => {
+        map.setView(coords ?? defaultCenter.current);
+    }, [coords]);
+
+    return null;
+}
 
 export default function() {
     const [reports, setReports] = useState([]);
@@ -218,7 +233,13 @@ export default function() {
                                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                     url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
                                 />
-                                <Marker position={[7.03285, 125.49727]} />
+
+                                <Panner 
+                                    coords={report.consumer_data ? 
+                                        [report.consumer_data?.latitude, report.consumer_data?.longitude] : null} />
+
+                                {report.consumer_data && 
+                                    <Marker position={[report.consumer_data.latitude, report.consumer_data.longitude]} />}
                             </MapContainer> 
 
                             <Space h= "xl" />
