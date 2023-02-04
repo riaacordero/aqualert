@@ -19,6 +19,9 @@ export default function() {
         e.preventDefault();
 
         signin({ email, password, isAdmin })
+            .then(() =>{
+                navigate('/admin')
+            })
             .catch((error) => {
                 if (error instanceof Error) {
                     showNotification({
