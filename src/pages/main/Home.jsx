@@ -55,9 +55,9 @@ function StatusIndicator({ data, latLang, zoom = DEFAULT_ZOOM, close }) {
             })}>
             <Stack>
                 <Stack align="center" p="xl" px={50} spacing={10}>
-                    {data?.status && <Stack spacing="sm">
-                        <Text color='blue' fz={20} fw="bold">Status: {STATUS_TYPES[Math.max((data.status ?? 1) - 1, 0)].label}</Text>
-                    </Stack>}
+                    <Stack spacing="sm">
+                        <Text color='blue' fz={20} fw="bold">Status: {STATUS_TYPES[Math.max((data?.status ?? 1) - 1, 0)].label}</Text>
+                    </Stack>
 
                     <Text fz="xs">Experiencing problems on your area?</Text>
                     <Button 
