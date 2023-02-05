@@ -138,10 +138,10 @@ export default function() {
         await updateDoc(doc(db, 'consumer_data', report.user.billingNo), { status: newStatus });
         await updateDoc(doc(db, 'reports', report.id), { last_updated: new Date() });
         // TODO: add notifications collection 
-        // await addDoc(collection(db, 'notifications'), {
-        //     user_id: report.user_id,
+        await addDoc(collection(db, 'notifications'), {
+            user_id: report.user_id,
             
-        // });
+        });
 
         getReports();
     }
