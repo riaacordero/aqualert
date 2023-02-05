@@ -1,4 +1,4 @@
-import { Divider, Space, Flex, Stack, Title, TextInput, Button, Paper, Text,  MantineProvider, Group, Table, ScrollArea, Select, Container} from '@mantine/core'
+import { Divider, Space, Flex, Stack, Title, TextInput, Button, Paper, Text, MantineProvider, Group, Table, ScrollArea, Select, Container } from '@mantine/core'
 import { IconSearch } from '@tabler/icons'
 import { DataTable } from 'mantine-datatable';
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
@@ -27,7 +27,7 @@ function Panner({ coords }) {
     return null;
 }
 
-export default function() {
+export default function () {
     const [reports, setReports] = useState([]);
     const [reportId, setCurrentReportId] = useState(null);
     const [report, setReport] = useState(null);
@@ -37,9 +37,9 @@ export default function() {
         }
     });
 
-    useEffect(() =>{
+    useEffect(() => {
         getReports();
-    },[])
+    }, [])
 
     useEffect(() => {
         console.log(reports);
@@ -48,10 +48,10 @@ export default function() {
     useEffect(() => {
         setReport(reports.find(r => r.id === reportId));
     }, [reportId]);
-    
+
     useEffect(() => {
-        form.setValues({ 
-            status: STATUS_TYPES[Math.max((report?.consumer_data?.status ?? 1) - 1, 0)].value 
+        form.setValues({
+            status: STATUS_TYPES[Math.max((report?.consumer_data?.status ?? 1) - 1, 0)].value
         });
     }, [report]);
 
@@ -62,7 +62,7 @@ export default function() {
     function fetchBarangayData(snapshot) {
         const barangayIds = [...new Set(snapshot.docs.map(doc => doc.get('barangay_id')).filter(Boolean))];
         return getDocs(query(
-            collection(db, BARANGAY_COLLECTION), 
+            collection(db, BARANGAY_COLLECTION),
             where(documentId(), 'in', barangayIds)
         ))
     }
@@ -73,9 +73,9 @@ export default function() {
      */
     function fetchConsumerData(snapshot) {
         const billingNos = [...new Set(snapshot.docs.map(doc => doc.get('billingNo')).filter(Boolean))];
-  
+
         return getDocs(query(
-            collection(db, CONSUMER_DATA_COLLECTION), 
+            collection(db, CONSUMER_DATA_COLLECTION),
             where(documentId(), 'in', billingNos)
         ))
     }
@@ -87,7 +87,7 @@ export default function() {
     function fetchUserData(snapshot) {
         const userIds = [...new Set(snapshot.docs.map(doc => doc.get('user_id')).filter(Boolean))];
         return getDocs(query(
-            collection(db, USER_COLLECTION), 
+            collection(db, USER_COLLECTION),
             where(documentId(), 'in', userIds)
         ))
     }
@@ -111,7 +111,7 @@ export default function() {
                     response
                 ])
             })
-            .then(([[usersResponse, consumersResponse, barangayResponse], response]) =>{
+            .then(([[usersResponse, consumersResponse, barangayResponse], response]) => {
                 // present contain each document that is present in the collection
                 const mappedReports = response.docs.map(doc => {
                     const user = usersResponse.docs.find(u => u.id === doc.get('user_id'));
@@ -119,7 +119,7 @@ export default function() {
                     const barangay = consumer_data ? barangayResponse.docs.find(b => b.id == consumer_data.get('barangay_id')) : null;
 
                     return {
-                        ...doc.data(), 
+                        ...doc.data(),
                         id: doc.id,
                         user: user?.data(),
                         consumer_data: consumer_data ? {
@@ -135,12 +135,12 @@ export default function() {
     }
 
     async function changeStatus(report, newStatus) {
-        await updateDoc(doc(db, 'consumer_data', report.user.billingNo), { status: newStatus });
-        await updateDoc(doc(db, 'reports', report.id), { last_updated: new Date() });
+        await updateDoc(doc(db, 'consumer_data', report?.user.billingNo), { status: newStatus });
+        await updateDoc(doc(db, 'reports', report?.id), { last_updated: new Date() });
         // TODO: add notifications collection 
         // await addDoc(collection(db, 'notifications'), {
-        //     user_id: report.user_id,
-            
+        //     user_id: report?.user_id,
+
         // });
 
         getReports();
@@ -149,11 +149,13 @@ export default function() {
     return (
         <Container py={60}>
             <Group h="100%" align={"stretch"}>
-                <Stack sx={{flex: 1}} h="100%" spacing={0} >
+                <Stack sx={{ flex: 1 }} h="100%" spacing={0} >
                     <Title order={2}> Welcome to Aqualert! </Title>
                     <Text fz="sm"> Monitor interruptions all over the city through is your admin dashboard. </Text>
-                    <Space h= "xs" />
+                    <Space h="xs" />
 
+                    {/* TODO: Search bar and print history implementation.
+                    
                     <Group grow >
                         <TextInput
                             placeholder="Search for barangay..."
@@ -163,118 +165,114 @@ export default function() {
                             
                         />
                         <Button  mt= "xl"  radius="xl" size="md" px={50} >Print History</Button>
-                    </Group>
+                    </Group> */}
 
-                    <Space h= "xl" />
-                        <DataTable
-                            withBorder
-                            borderRadius="sm"
-                            withColumnBorders
-                            striped
-                            highlightOnHover
+                    <Space h="xl" />
+                    <DataTable
+                        withBorder
+                        borderRadius="sm"
+                        withColumnBorders
+                        striped
+                        highlightOnHover
 
-                            records={reports.map(r => ({
-                                id: r.id,
-                                billAccount: r.user?.billingNo ?? 'Unknown',
-                                barangay: r.consumer_data?.barangay?.barangay_name ?? 'Unknown',
-                                district: 'Toril',
-                                previousStatus: STATUS_TYPES[Math.max((r.consumer_data?.status ?? 1) - 1, 0)].label
-                            }))}
-                            // define columns
-                            columns={[
-                                {
-                                    accessor: 'billAccount',
-                                    // this column has a custom title
-                                    title: 'Billing Account No.',
-                                    // right-align column
-                                    textAlignment: 'left',
-                                },
-                                { 
-                                    accessor: 'barangay' ,
-                                    title: 'Barangay'
-                                },
-                                {
-                                    accessor: 'district',
-                                    title: 'District'
-                                },
-                                {
-                                    accessor: 'previousStatus',
-                                    title: 'Previous Status',
-                                    // this column has custom cell data rendering
-                                    render: ({ previousStatus }) => (
-                                        <Text weight={700} color={STATUS_TYPES.find(s => s.label === previousStatus).color}>
+                        records={reports.map(r => ({
+                            id: r.id,
+                            billAccount: r.user?.billingNo ?? 'Unknown',
+                            barangay: r.consumer_data?.barangay?.barangay_name ?? 'Unknown',
+                            street_name: r.consumer_data?.street_name ?? 'Unknown',
+                            previousStatus: STATUS_TYPES[Math.max((r.consumer_data?.status ?? 1) - 1, 0)].label
+                        }))}
+                        // define columns
+                        columns={[
+                            {
+                                accessor: 'billAccount',
+                                title: 'Billing Account No.',
+                                textAlignment: 'left',
+                            },
+                            {
+                                accessor: 'barangay',
+                                title: 'Barangay'
+                            },
+                            {
+                                accessor: 'street_name',
+                                title: 'Street Name'
+                            },
+                            {
+                                accessor: 'previousStatus',
+                                title: 'Previous Status',
+                                // this column has custom cell data rendering
+                                render: ({ previousStatus }) => (
+                                    <Text weight={700} color={STATUS_TYPES.find(s => s.label === previousStatus).color}>
                                         {previousStatus.toUpperCase()}
-                                        </Text>
-                                    ),
-                                }
-                            ]}
-                            // execute this callback when a row is clicked
-                            onRowClick={({ id }) =>
-                                setCurrentReportId(id)
+                                    </Text>
+                                ),
                             }
-                        />
+                        ]}
+                        // execute this callback when a row is clicked
+                        onRowClick={({ id }) =>
+                            setCurrentReportId(id)
+                        }
+                    />
                 </Stack>
-                <Stack sx={{flex: 1, flexGrow: 1}} h="100%">
-                    {report && (
-                        <>
-                            <Paper radius="xs" pl={10} pr={40} py={5} mb="xl" withBorder >
-                                <Flex direction="row" gap='sm'  wrap="wrap">
+                <Stack sx={{ flex: 1, flexGrow: 1 }} h="100%">
+                <Paper radius="xs" pl={10} pr={40} py={5} mb="xl" withBorder >
+                                <Flex direction="row" gap='sm' wrap="wrap">
                                     <Text fz="md" fw={500}>Selected Barangay: </Text>
-                                    <Text fz={16} >{report.consumer_data?.barangay?.barangay_name}, Toril</Text>
+                                    <Text fz={16} >{report?.consumer_data?.barangay?.barangay_name}</Text>
                                 </Flex>
                             </Paper>
 
-                            <MapContainer 
-                                center={[7.03285, 125.49727]} 
-                                zoom={20} 
-                                scrollWheelZoom={false} 
+                            <MapContainer
+                                center={[7.03285, 125.49727]}
+                                zoom={20}
+                                scrollWheelZoom={false}
                                 style={{ height: '400px' }}>
                                 <TileLayer
                                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                     url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
                                 />
 
-                                <Panner 
-                                    coords={report.consumer_data ? 
-                                        [report.consumer_data?.latitude, report.consumer_data?.longitude] : null} />
+                                <Panner
+                                    coords={report?.consumer_data ?
+                                        [report?.consumer_data?.latitude, report?.consumer_data?.longitude] : null} />
 
-                                {report.consumer_data && 
-                                    <Marker position={[report.consumer_data.latitude, report.consumer_data.longitude]} />}
-                            </MapContainer> 
+                                {report?.consumer_data &&
+                                    <Marker position={[report?.consumer_data.latitude, report?.consumer_data.longitude]} />}
+                            </MapContainer>
 
-                            <Space h= "xl" />
+                            <Space h="xl" />
 
                             <Paper radius="xs" pl={10} pr={40} py={5} withBorder >
                                 <Text fz="xl" fw={500}>Report Details </Text>
-                                <Divider my="xs" size="xs" color="dark.7"/>
+                                <Divider my="xs" size="xs" color="dark.7" />
 
                                 <Stack spacing={0}>
-                                    <Flex direction= 'row' gap= "sm">
+                                    <Flex direction='row' gap="sm">
                                         <Flex direction="column">
                                             <Text fz="xs" fw={500}>Complainant: </Text>
                                             <Text fz="xs" fw={500}>Billing Account No.: </Text>
                                             <Text fz="xs" fw={500}>Report Date: </Text>
                                         </Flex>
                                         <Flex direction="column">
-                                            <Text fz="xs">{report.user?.firstName} {report.user?.middleName} {report.user?.lastName}</Text>
-                                            <Text fz="xs">{report.user?.billingNo}</Text>
+                                            <Text fz="xs">{report?.user?.firstName} {report?.user?.middleName} {report?.user?.lastName}</Text>
+                                            <Text fz="xs">{report?.user?.billingNo}</Text>
                                             <Text fz="xs">
-                                                {dayjs(report.interruptDate.toDate()).format('MM/DD/YYYY | h:mm A')}
+                                                {dayjs(report?.interruptDate?.toDate()).format('MM/DD/YYYY | h:mm A')}
                                             </Text>
                                         </Flex>
                                     </Flex>
-                                
-                                    <Space h= "xl" />
+
+                                    <Space h="xl" />
                                     <Text fz="xs" fw={500}>Message: </Text>
                                     <Text fz="xs" >
-                                        {report.complaintMsg}
+                                        {report?.complaintMsg}
                                     </Text>
                                 </Stack>
                             </Paper>
 
                             <form onSubmit={form.onSubmit(({ status }) => {
-                                if (!report || !report.consumer_data || !report.user) return;
-                                const newStatus = STATUS_TYPES.findIndex(s => s.value === status) ?? report.consumer_data?.status - 1 ?? 0;
+                                if (!report || !report?.consumer_data || !report?.user) return;
+                                const newStatus = STATUS_TYPES.findIndex(s => s.value === status) ?? report?.consumer_data?.status - 1 ?? 0;
                                 changeStatus(report, newStatus + 1);
                             })}>
                                 <Group position='apart'>
@@ -284,11 +282,9 @@ export default function() {
                                         data={STATUS_TYPES}
                                         {...form.getInputProps('status')}
                                     />
-                                    <Button type="submit" mt= "xl" radius="xl" size="md" px={60}>Send</Button>
+                                    <Button type="submit" mt="xl" radius="xl" size="md" px={60}>Send</Button>
                                 </Group>
                             </form>
-                        </>
-                    )}
                 </Stack>
             </Group>
         </Container>
