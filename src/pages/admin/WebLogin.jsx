@@ -56,8 +56,8 @@ export default function() {
                         alt= "icon for dp" 
 
                     />
-                    <Title order={4}> Welcome to Aqualert </Title>
-                    <Text fz="xs"> Lorem ipsum dolor sit amet consectetur. </Text>
+                    <Title order={4}>Aqualert Admin System</Title>
+                    <Text fz="xs"> Access consumer complaints through Aqualert's dedicated complaint management system. </Text>
                     
                     <form onSubmit={handleLogin}>
                         <Stack  mt= "lg" spacing="sm" >
