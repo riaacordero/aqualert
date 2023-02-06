@@ -115,7 +115,11 @@ export default function () {
               }
             }
         }}}
-            
+        var ac = new AhoCorasick(['test', 'asd', 'qwe', 'boat', 'hadlok'
+
+        ]);   
+        
+        
     return (
         <Container my="auto" py={50} px={40} h="100%">
             <Stack>
