@@ -11,8 +11,8 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import {auth} from "../../firebase"
 import { USER_COLLECTION } from '../../collection_constants';
 
+
 export default function() {
-    
     const navigate = useNavigate()
     const form = useForm({
         initialValues:{
