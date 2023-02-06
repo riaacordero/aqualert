@@ -11,7 +11,7 @@ const consumerData = [
         "location_id": 100000000,
         "street_name": "Caimeto Street, San Roque",
         "barangay": "Daliao",
-        "status": 1,
+        "status": 5,
         "latitude": 7.0092237,
         "longitude": 125.50416
     },
@@ -20,7 +20,7 @@ const consumerData = [
         "location_id": 100000001,
         "street_name": "Camarin St.",
         "barangay": "New Lizada",
-        "status": 1,
+        "status": 5,
         "latitude": 7.0076781,
         "longitude": 125.5000958
     },
@@ -29,7 +29,7 @@ const consumerData = [
         "location_id": 100000002,
         "street_name": "Purok 4 Nalum",
         "barangay": "Baliok",
-        "status": 1,
+        "status": 5,
         "latitude": 7.0467054,
         "longitude": 125.5004759
     },
@@ -38,7 +38,7 @@ const consumerData = [
         "location_id": 100000003,
         "street_name": "Purok 7A",
         "barangay": "Bangkas Heights",
-        "status": 1,
+        "status": 5,
         "latitude": 7.0583498,
         "longitude": 125.4953054
     },
@@ -47,7 +47,7 @@ const consumerData = [
         "location_id": 100000004,
         "street_name": "Lot 1-E 26 Ecoland, 2000 Dacon Complex",
         "barangay": "Bucana",
-        "status": 1,
+        "status": 5,
         "latitude": 7.0508144,
         "longitude": 125.5961191
     },
@@ -56,7 +56,7 @@ const consumerData = [
         "location_id": 100000005,
         "street_name": "Blk 42, Lot 1, Teakwood Street, Green Meadows Subdivision, Sto. Niño",
         "barangay": "Tugbok",
-        "status": 1,
+        "status": 5,
         "latitude": 7.07546375,
         "longitude": 125.5112352
     },
@@ -65,7 +65,7 @@ const consumerData = [
         "location_id": 100000006,
         "street_name": "Sunnyville Subdivision",
         "barangay": "Talomo",
-        "status": 1,
+        "status": 5,
         "latitude": 7.05444905,
         "longitude": 125.5494883
     },
@@ -74,7 +74,7 @@ const consumerData = [
         "location_id": 100000007,
         "street_name": "Lanzona Subdivision, 9 Rigodon Street",
         "barangay": "Matina Aplaya",
-        "status": 1,
+        "status": 5,
         "latitude": 7.0501531,
         "longitude": 125.5728044
     },
@@ -83,7 +83,7 @@ const consumerData = [
         "location_id": 100000008,
         "street_name": "Alpha Executive Home, 2nd Ave, Alpha Executive Homes",
         "barangay": "Matina Crossing",
-        "status": 1,
+        "status": 5,
         "latitude": 7.0436957,
         "longitude": 125.5746731
     },
@@ -92,7 +92,7 @@ const consumerData = [
         "location_id": 100000009,
         "street_name": "495 General Luna Ext",
         "barangay": "Poblacion District",
-        "status": 1,
+        "status": 5,
         "latitude": 7.0719348,
         "longitude": 125.6045412
     },
@@ -101,7 +101,7 @@ const consumerData = [
         "location_id": 100000010,
         "street_name": "Orange St, Spring Village, Bugac",
         "barangay": "Maa",
-        "status": 1,
+        "status": 5,
         "latitude": 7.0794387,
         "longitude": 125.5847146
     },
@@ -110,7 +110,7 @@ const consumerData = [
         "location_id": 100000011,
         "street_name": "Blk 7, Lot 3, Luzviminda Village, Don Julian Rodriguez Sr. Ave, Maa Road",
         "barangay": "Talomo",
-        "status": 1,
+        "status": 5,
         "latitude": 7.0726928,
         "longitude": 125.5852327
     },
@@ -119,7 +119,7 @@ const consumerData = [
         "location_id": 100000012,
         "street_name": "39 Mahogany Street Nova Tierra Village",
         "barangay": "Lanang",
-        "status": 1,
+        "status": 5,
         "latitude": 7.1128834,
         "longitude": 125.6409626
     },
@@ -128,7 +128,7 @@ const consumerData = [
         "location_id": 100000013,
         "street_name": "3JQ4+F5C, Circumferential Rd",
         "barangay": "Bajada",
-        "status": 1,
+        "status": 5,
         "latitude": 7.0874962,
         "longitude": 125.6057321
     },
@@ -137,7 +137,7 @@ const consumerData = [
         "location_id": 100000014,
         "street_name": "Sigma St, Doña Vicenta Village",
         "barangay": "Bajada",
-        "status": 1,
+        "status": 5,
         "latitude": 7.08314545,
         "longitude": 125.6080931
     },
@@ -146,7 +146,7 @@ const consumerData = [
         "location_id": 100000015,
         "street_name": "51-A, 8000 Artiaga St",
         "barangay": "Poblacion District",
-        "status": 1,
+        "status": 5,
         "latitude": 7.0643077,
         "longitude": 125.6145953
     },
@@ -155,7 +155,7 @@ const consumerData = [
         "location_id": 100000016,
         "street_name": "Brgy. 40-D Basketball Court, 8 Nograles Avenue",
         "barangay": "Poblacion District",
-        "status": 1,
+        "status": 5,
         "latitude": 7.060418,
         "longitude": 125.6089304
     },
@@ -164,7 +164,7 @@ const consumerData = [
         "location_id": 100000017,
         "street_name": "Juna Subdivision, 425 Tulip Drive",
         "barangay": "Matina",
-        "status": 1,
+        "status": 5,
         "latitude": 7.0567044,
         "longitude": 125.5935129
     },
@@ -173,7 +173,7 @@ const consumerData = [
         "location_id": 100000018,
         "street_name": "Gen. Douglas MacArthur Hwy, Talomo, Davao City, 8000 Davao del Sur",
         "barangay": "Matina",
-        "status": 1,
+        "status": 5,
         "latitude": 7.06389545,
         "longitude": 125.5956756
     },
@@ -182,7 +182,7 @@ const consumerData = [
         "location_id": 100000019,
         "street_name": "San Antonio de Padua Parish, Holy Cross Drive",
         "barangay": "Agdao",
-        "status": 1,
+        "status": 5,
         "latitude": 7.0885526,
         "longitude": 125.6301036
     },
@@ -191,9 +191,18 @@ const consumerData = [
         "location_id": 100000019,
         "street_name": "Purok 1B, Luac, Brgy. Bayabas",
         "barangay": "Toril",
-        "status": 1,
+        "status": 5,
         "latitude": 7.0215371,
         "longitude": 125.4610025
+    },
+    {
+        "billing_num": 100000366,
+        "location_id": 100000011,
+        "street_name": "Blk 9, Lot 18, Luzviminda Village, Maa Road",
+        "barangay": "Talomo",
+        "status": 5,
+        "latitude": 7.0726928,
+        "longitude": 125.5852327
     }
 ]
 
