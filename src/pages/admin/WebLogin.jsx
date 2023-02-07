@@ -40,7 +40,7 @@ export default function() {
                 headings: { fontFamily: 'Poppins, sans-serif' }
             }}>
             
-            <Container my="auto" size={400} h="100%">
+            <Container my="auto" size={400} h="100vh">
                 <Flex
                     direction='column'
                     gap='sm'

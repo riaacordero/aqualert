@@ -156,7 +156,7 @@ export default function () {
 
     return (
         <Container py={60}>
-            <Group h="100%" align={"stretch"}>
+            <Group spacing={14} h="100%" align={"stretch"}>
                 <Stack sx={{ flex: 1 }} h="100%" spacing={0} >
                     <Stack>
                         <Group>

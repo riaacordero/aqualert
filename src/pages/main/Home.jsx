@@ -51,7 +51,7 @@ function StatusIndicator({ data, latLang, zoom = DEFAULT_ZOOM, close }) {
             withOverlay={false}
             withCloseButton={false}
             sx={(theme) => ({
-                textAlign: 'center'
+                textAlign: 'center',
             })}>
             <Stack>
                 <Stack align="center" p="xl" px={50} spacing={10}>
@@ -195,7 +195,7 @@ export default function () {
             </Group>
         </Modal>
 
-        <Stack my="auto" h="100%" spacing={0}>
+        <Stack my="auto" h="100vh" spacing={0}>
             <Stack p="md">
                 <Group position='apart'>
                     <Group>
