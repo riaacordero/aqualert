@@ -19,7 +19,8 @@ const router = createBrowserRouter([
    
     {
         path: '/',
-        element: <GuestOnly>
+        element: 
+        <GuestOnly>
             <Login />
         </GuestOnly>
     },
@@ -34,7 +35,9 @@ const router = createBrowserRouter([
     {
         path: '/admin',
         element: (
+            <RequireAuth>
                 <WebAdmin />
+            </RequireAuth>
         )
     },
     {
@@ -87,6 +90,9 @@ const router = createBrowserRouter([
         path: '/__god_mode',
         element: (<GodMode />)
     },
+
+    // TEST FILES
+
 ]);
 
 export default router;

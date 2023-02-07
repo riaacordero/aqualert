@@ -1,6 +1,7 @@
 import { Divider, Space, Flex, Stack, Title, Modal, Button, Paper, Text, Image, Group, ActionIcon, ScrollArea, Select, Container } from '@mantine/core'
 import { IconSearch, IconPower } from '@tabler/icons'
 import { DataTable } from 'mantine-datatable';
+import { showNotification } from '@mantine/notifications';
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useRef, useState } from 'react'
@@ -139,6 +140,11 @@ export default function () {
     async function changeStatus(report, newStatus) {
         await updateDoc(doc(db, 'consumer_data', report?.user.billingNo), { status: newStatus });
         await updateDoc(doc(db, 'reports', report?.id), { last_updated: new Date() });
+        showNotification({
+            color: 'green',
+            title: 'Status set successfully!',
+            message: "The new status should reflect on the table and the complainant's app."
+        })
         // TODO: add notifications collection 
         // await addDoc(collection(db, 'notifications'), {
         //     user_id: report?.user_id,
