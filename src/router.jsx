@@ -16,13 +16,14 @@ import RequireAuth from './components/RequireAuth.jsx';
 import WebAdmintTest from './pages/admin/WebAdmintTest.jsx';
 
 const router = createBrowserRouter([
-   
+
     {
         path: '/',
-        element: 
-        <GuestOnly>
-            <Login />
-        </GuestOnly>
+        element: (
+            <GuestOnly>
+                <Login />
+            </GuestOnly>
+        )
     },
     {
         path: '/register',
@@ -43,7 +44,7 @@ const router = createBrowserRouter([
     {
         path: '/adminlogin',
         element: (
-                <WebLogin />
+            <WebLogin />
         )
     },
     {
