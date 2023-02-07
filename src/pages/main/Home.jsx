@@ -1,5 +1,5 @@
 import { ActionIcon, Button, Drawer, Flex, Group, Modal, Stack, Text } from '@mantine/core';
-import { IconBell, IconCrosshair, IconCurrentLocation, IconMap2, IconPower } from '@tabler/icons';
+import { IconBell, IconCurrentLocation, IconPower } from '@tabler/icons';
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useCallback, useEffect, useState } from 'react';
