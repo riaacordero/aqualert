@@ -1,4 +1,4 @@
-import { Divider, Space, Flex, Stack, Title, Modal, Button, Paper, Text, ActionIcon, Group, Table, ScrollArea, Select, Container } from '@mantine/core'
+import { Divider, Space, Flex, Stack, Title, Modal, Button, Paper, Text, Image, Group, ActionIcon, ScrollArea, Select, Container } from '@mantine/core'
 import { IconSearch, IconPower } from '@tabler/icons'
 import { DataTable } from 'mantine-datatable';
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
@@ -152,9 +152,18 @@ export default function () {
         <Container py={60}>
             <Group h="100%" align={"stretch"}>
                 <Stack sx={{ flex: 1 }} h="100%" spacing={0} >
-                    <Title order={2}> Welcome to Aqualert! </Title>
-                    <Text fz="sm"> Monitor interruptions all over the city through is your admin dashboard. </Text>
-                    <Space h="xs" />
+                    <Stack>
+                        <Group>
+                            <Image
+                                width= {40}
+                                sx={{ alignSelf: 'center' }}
+                                src= "./assets/aqualert-logo.png"
+                                alt= "icon for dp" 
+                            />
+                            <Title order={2}> Welcome to Aqualert! </Title>
+                        </Group>
+                        <Text fz="sm">Monitor interruptions all over the city through your admin dashboard. Select a complaint and review its details and map location.</Text>  
+                    </Stack>
 
                     {/* TODO: Search bar and print history implementation.
                     
@@ -196,7 +205,7 @@ export default function () {
                     </Modal>
 
                     <Space h="xl" />
-                    <ScrollArea style={{height: 720}}>
+                    <ScrollArea style={{height: 700}}>
                         
                         <DataTable
                             withBorder
@@ -246,12 +255,21 @@ export default function () {
                     </ScrollArea>
                 </Stack>
                 <Stack sx={{ flex: 1, flexGrow: 1 }} h="100%">
-                    <Paper radius="xs" pl={10} pr={40} py={5} mb="xl" withBorder >
-                        <Flex direction="row" gap='sm' wrap="wrap">
-                            <Text fz="md" fw={500}>Selected Barangay: </Text>
-                            <Text fz={16} >{report?.consumer_data?.barangay?.barangay_name}</Text>
-                        </Flex>
-                    </Paper>
+                    <Flex direction='row' gap='sm'>
+                        <Paper w={380} radius="xs" pl={10} pr={10} py={5} mb="xl" withBorder >
+                            <Flex direction="row" gap='sm' wrap="wrap">
+                                <Text fz="md" fw={500}>Selected Barangay: </Text>
+                                <Text fz={16} >{report?.consumer_data?.barangay?.barangay_name}</Text>
+                            </Flex>
+                        </Paper>
+                        <ActionIcon 
+                            onClick={() => {
+                                setOpened(true)}
+                            }
+                            color='red' size="lg">
+                            <IconPower size={50}/>
+                        </ActionIcon>
+                    </Flex>
 
                     <MapContainer
                         center={[7.03285, 125.49727]}
@@ -270,8 +288,6 @@ export default function () {
                         {report?.consumer_data &&
                             <Marker position={[report?.consumer_data.latitude, report?.consumer_data.longitude]} />}
                     </MapContainer>
-
-                    <Space h="xl" />
 
                     <Paper radius="xs" pl={10} pr={40} py={5} withBorder >
                         <Text fz="xl" fw={500}>Report Details </Text>
@@ -300,7 +316,7 @@ export default function () {
                             </Text>
                         </Stack>
                     </Paper>
-
+                    <Space/>
                     <form onSubmit={form.onSubmit(({ status }) => {
                         if (!report || !report?.consumer_data || !report?.user) return;
                         const newStatus = STATUS_TYPES.findIndex(s => s.value === status) ?? report?.consumer_data?.status - 1 ?? 0;
