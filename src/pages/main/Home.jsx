@@ -67,7 +67,7 @@ function StatusIndicator({ data, latLang, zoom = DEFAULT_ZOOM, close }) {
                         variant="gradient" radius="xl" fullWidth>Report interruption</Button>
                     <Button 
                     onClick={() => {
-                        navigate('/history')}
+                        navigate('/coming_soon')}
                     }
                     radius="xl" variant="outline" fullWidth>Check status history</Button>
                 </Stack>
@@ -210,7 +210,7 @@ export default function () {
                     <Group>
                         <ActionIcon 
                             onClick={() => {
-                                navigate('/notifications')}
+                                navigate('/coming_soon')}
                             } 
                             color='blue' size="lg">
                             <IconBell size={50}/>

@@ -14,6 +14,7 @@ import GodMode from './pages/admin/GodMode.tsx';
 import GuestOnly from './components/GuestOnly';
 import RequireAuth from './components/RequireAuth.jsx';
 import WebAdmintTest from './pages/admin/WebAdmintTest.jsx';
+import ComingSoon from './pages/main/ComingSoon.jsx';
 
 const router = createBrowserRouter([
 
@@ -91,8 +92,14 @@ const router = createBrowserRouter([
         path: '/__god_mode',
         element: (<GodMode />)
     },
-
-    // TEST FILES
+    {
+        path: '/coming_soon',
+        element: (
+        <RequireAuth>
+            <ComingSoon />
+        </RequireAuth>
+        )
+    }
 
 ]);
 
