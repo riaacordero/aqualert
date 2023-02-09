@@ -1,4 +1,4 @@
-const nuisanceWords = ["tubig", "walay tubig", "walay agas", "no water", "water"];
+const topWords = ["tubig", "walay tubig", "walay agas", "no water", "water", "interruption", "interrupted", "service", "service interruption"];
 
 export default function(value: string) {
     let isTop = false;
@@ -8,7 +8,7 @@ export default function(value: string) {
     const tokens = value.split(/[\t\n\r\f\v]/);
 
     for (const token of tokens) {
-        for (const pattern of nuisanceWords) {
+        for (const pattern of topWords) {
             const idx = token.toLowerCase().indexOf(pattern);
             if (idx !== -1) {
                 isTop = true;
