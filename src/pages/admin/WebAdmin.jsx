@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import { STATUS_TYPES } from '../../utils';
 import { useForm } from '@mantine/form';
 import { BARANGAY_COLLECTION, CONSUMER_DATA_COLLECTION, USER_COLLECTION } from '../../collection_constants';
+import aho_corasick from '../../aho_corasick';
 
 function Panner({ coords }) {
     const map = useMap();
@@ -132,7 +133,23 @@ export default function () {
                     }
                 });
 
-                setReports(mappedReports)
+                //@ts-ignore
+                setReports(mappedReports.sort((a, b) => {
+                    //@ts-ignore
+                    // move the report to the top if there are matches
+                    if (a.complaintMsg && aho_corasick(a.complaintMsg)) {
+                        return -1;
+                    } 
+                    
+                    //@ts-ignore
+                    // move the report to the bottom if next report is credible
+                    if (b.complaintMsg && aho_corasick(b.complaintMsg)) {
+                        return 1;
+                    }
+
+                    // retain if none
+                    return 0;
+                }));
             })
             .catch(console.error)
     }

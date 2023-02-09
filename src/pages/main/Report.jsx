@@ -24,9 +24,7 @@ export default function () {
         }
     })
 
-
-        
-        
+             
     return (
         <Container my="auto" py={50} px={40} h="100%">
             <Stack>
@@ -55,6 +53,7 @@ export default function () {
                             placeholder='Tell us more about what happened...' label='Complaint details' withAsterisk
                             minRows={10}
                             maxRows={20} {...form.getInputProps('complaintMsg')}/>
+                            
                     </Stack>
                     <Stack py={50}>
                         <Button type="submit"
@@ -67,6 +66,7 @@ export default function () {
                         </Button>
                         <Button 
                             onClick={() => {
+
                                 navigate('/home')}
                             }
                             fullWidth variant="outline" radius="xl" size="md">Cancel
