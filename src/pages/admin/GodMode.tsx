@@ -1,224 +1,57 @@
-import { Button, Center, Stack, Title } from "@mantine/core";
-import { doc, setDoc, collection, getDocs, DocumentData, QueryDocumentSnapshot, deleteDoc, getCountFromServer } from "firebase/firestore";
-import { useEffect } from "react";
+import { Button, Center, FileInput, Stack, Title } from "@mantine/core";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc, collection, getDocs, DocumentData, QueryDocumentSnapshot, deleteDoc, getCountFromServer, query, where } from "firebase/firestore";
+import Papa from "papaparse";
+import { useEffect, useMemo } from "react";
 import { useState } from "react";
-import { BARANGAY_COLLECTION, CONSUMER_DATA_COLLECTION } from "../../collection_constants";
-import { db } from "../../firebase";
+import { BARANGAY_COLLECTION, CONSUMER_DATA_COLLECTION, USER_COLLECTION } from "../../collection_constants";
+import { auth, db } from "../../firebase";
 
-const consumerData = [
-    {
-        "billing_num": 100000345,
-        "location_id": 100000000,
-        "street_name": "Caimeto Street, San Roque",
-        "barangay": "Daliao",
-        "status": 5,
-        "latitude": 7.0092237,
-        "longitude": 125.50416
-    },
-    {
-        "billing_num": 100000346,
-        "location_id": 100000001,
-        "street_name": "Camarin St.",
-        "barangay": "New Lizada",
-        "status": 5,
-        "latitude": 7.0076781,
-        "longitude": 125.5000958
-    },
-    {
-        "billing_num": 100000347,
-        "location_id": 100000002,
-        "street_name": "Purok 4 Nalum",
-        "barangay": "Baliok",
-        "status": 5,
-        "latitude": 7.0467054,
-        "longitude": 125.5004759
-    },
-    {
-        "billing_num": 100000348,
-        "location_id": 100000003,
-        "street_name": "Purok 7A",
-        "barangay": "Bangkas Heights",
-        "status": 5,
-        "latitude": 7.0583498,
-        "longitude": 125.4953054
-    },
-    {
-        "billing_num": 100000349,
-        "location_id": 100000004,
-        "street_name": "Lot 1-E 26 Ecoland, 2000 Dacon Complex",
-        "barangay": "Bucana",
-        "status": 5,
-        "latitude": 7.0508144,
-        "longitude": 125.5961191
-    },
-    {
-        "billing_num": 100000350,
-        "location_id": 100000005,
-        "street_name": "Blk 42, Lot 1, Teakwood Street, Green Meadows Subdivision, Sto. Niño",
-        "barangay": "Tugbok",
-        "status": 5,
-        "latitude": 7.07546375,
-        "longitude": 125.5112352
-    },
-    {
-        "billing_num": 100000351,
-        "location_id": 100000006,
-        "street_name": "Sunnyville Subdivision",
-        "barangay": "Talomo",
-        "status": 5,
-        "latitude": 7.05444905,
-        "longitude": 125.5494883
-    },
-    {
-        "billing_num": 100000352,
-        "location_id": 100000007,
-        "street_name": "Lanzona Subdivision, 9 Rigodon Street",
-        "barangay": "Matina Aplaya",
-        "status": 5,
-        "latitude": 7.0501531,
-        "longitude": 125.5728044
-    },
-    {
-        "billing_num": 100000353,
-        "location_id": 100000008,
-        "street_name": "Alpha Executive Home, 2nd Ave, Alpha Executive Homes",
-        "barangay": "Matina Crossing",
-        "status": 5,
-        "latitude": 7.0436957,
-        "longitude": 125.5746731
-    },
-    {
-        "billing_num": 100000354,
-        "location_id": 100000009,
-        "street_name": "495 General Luna Ext",
-        "barangay": "Poblacion District",
-        "status": 5,
-        "latitude": 7.0719348,
-        "longitude": 125.6045412
-    },
-    {
-        "billing_num": 100000355,
-        "location_id": 100000010,
-        "street_name": "Orange St, Spring Village, Bugac",
-        "barangay": "Maa",
-        "status": 5,
-        "latitude": 7.0794387,
-        "longitude": 125.5847146
-    },
-    {
-        "billing_num": 100000356,
-        "location_id": 100000011,
-        "street_name": "Blk 7, Lot 3, Luzviminda Village, Don Julian Rodriguez Sr. Ave, Maa Road",
-        "barangay": "Talomo",
-        "status": 5,
-        "latitude": 7.0726928,
-        "longitude": 125.5852327
-    },
-    {
-        "billing_num": 100000357,
-        "location_id": 100000012,
-        "street_name": "39 Mahogany Street Nova Tierra Village",
-        "barangay": "Lanang",
-        "status": 5,
-        "latitude": 7.1128834,
-        "longitude": 125.6409626
-    },
-    {
-        "billing_num": 100000358,
-        "location_id": 100000013,
-        "street_name": "3JQ4+F5C, Circumferential Rd",
-        "barangay": "Bajada",
-        "status": 5,
-        "latitude": 7.0874962,
-        "longitude": 125.6057321
-    },
-    {
-        "billing_num": 100000359,
-        "location_id": 100000014,
-        "street_name": "Sigma St, Doña Vicenta Village",
-        "barangay": "Bajada",
-        "status": 5,
-        "latitude": 7.08314545,
-        "longitude": 125.6080931
-    },
-    {
-        "billing_num": 100000360,
-        "location_id": 100000015,
-        "street_name": "51-A, 8000 Artiaga St",
-        "barangay": "Poblacion District",
-        "status": 5,
-        "latitude": 7.0643077,
-        "longitude": 125.6145953
-    },
-    {
-        "billing_num": 100000361,
-        "location_id": 100000016,
-        "street_name": "Brgy. 40-D Basketball Court, 8 Nograles Avenue",
-        "barangay": "Poblacion District",
-        "status": 5,
-        "latitude": 7.060418,
-        "longitude": 125.6089304
-    },
-    {
-        "billing_num": 100000362,
-        "location_id": 100000017,
-        "street_name": "Juna Subdivision, 425 Tulip Drive",
-        "barangay": "Matina",
-        "status": 5,
-        "latitude": 7.0567044,
-        "longitude": 125.5935129
-    },
-    {
-        "billing_num": 100000363,
-        "location_id": 100000018,
-        "street_name": "Gen. Douglas MacArthur Hwy, Talomo, Davao City, 8000 Davao del Sur",
-        "barangay": "Matina",
-        "status": 5,
-        "latitude": 7.06389545,
-        "longitude": 125.5956756
-    },
-    {
-        "billing_num": 100000364,
-        "location_id": 100000019,
-        "street_name": "San Antonio de Padua Parish, Holy Cross Drive",
-        "barangay": "Agdao",
-        "status": 5,
-        "latitude": 7.0885526,
-        "longitude": 125.6301036
-    },
-    {
-        "billing_num": 100000365,
-        "location_id": 100000019,
-        "street_name": "Purok 1B, Luac, Brgy. Bayabas",
-        "barangay": "Toril",
-        "status": 5,
-        "latitude": 7.0215371,
-        "longitude": 125.4610025
-    },
-    {
-        "billing_num": 100000366,
-        "location_id": 100000011,
-        "street_name": "Blk 9, Lot 18, Luzviminda Village, Maa Road",
-        "barangay": "Talomo",
-        "status": 5,
-        "latitude": 7.0726928,
-        "longitude": 125.5852327
-    }
-]
+interface ConsumerData {
+    billing_num: string
+    connection_type: string
+    water_meter_id: string
+    water_supply_sys: string
+    barangay_name: string
+    street_name: string
+    latitude: number
+    longitude: number
+    status_type: number
+}
+
+interface User {
+    firstName: string
+    lastName: string
+    email: string
+    password: string
+    billingNo: string
+    isAdmin: boolean
+}
 
 export default function() {
-    const [loaded, setDataLoaded] = useState(false);
+    const [isRemoteDataLoaded, setRemoteDataLoaded] = useState(false);
     const [barangays, setBarangays] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
-    const [consumerDataCount, setConsumerData] = useState(0);
+    const [inputCustomerData, setInputCustomerData] = useState<ConsumerData[]>([]);
+    const [inputUserData, setInputUserData] = useState<User[]>([]);
+    const [userDataCount, setUserDataCount] = useState(0);
+    const [consumerDataCount, setConsumerDataCount] = useState(0);
+    const lastBarangayId = useMemo(() => parseInt(barangays[barangays.length - 1]?.id ?? '100000359' /* 360 */), [barangays]);
 
     useEffect(() => {
         Promise.all([
             loadBarangays(),
-            loadConsumerData()
+            loadConsumerData(),
+            loadUserData()
         ]).finally(() => {
-            setDataLoaded(true);
+            setRemoteDataLoaded(true);
         });
     }, []);
+
+    useEffect(() => {
+        if (consumerDataCount === 0 || barangays.length === 0) {
+            loadConsumerData();
+        }
+    }, [barangays, consumerDataCount]);
 
     const loadBarangays = async () => {
         const querySnapshot = await getDocs(collection(db, BARANGAY_COLLECTION));
@@ -227,25 +60,37 @@ export default function() {
 
     const loadConsumerData = async () => {
         const querySnapshot = await getCountFromServer(collection(db, CONSUMER_DATA_COLLECTION));
-        setConsumerData(querySnapshot.data().count);
+        setConsumerDataCount(querySnapshot.data().count);
     }
 
-    const prepopulateBarangays = () => {
-        const uniqueBarangays = Array.from(new Set(consumerData.map(d => d.barangay)));
-        Promise.all(uniqueBarangays.map((name, i) => setDoc(
-            doc(db, BARANGAY_COLLECTION, (i + 100000360).toString()),
-            { barangay_name: name }
-        )))
+    const loadUserData = async () => {
+        const querySnapshot = await getCountFromServer(collection(db, USER_COLLECTION));
+        setUserDataCount(querySnapshot.data().count);
+    }
+
+    const uploadBarangays = () => {
+        const uniqueBarangays = Array.from(new Set(inputCustomerData.map(d => d.barangay_name)));
+
+        // Exclude previous barangays
+        const existingBarangaysQuery = query(collection(db, BARANGAY_COLLECTION), where('barangay_name', 'in', uniqueBarangays))
+        getDocs(existingBarangaysQuery)
+            .then(snapshot => {
+                const foundExisting = snapshot.docs.map(d => d.get('barangay_name') as string);
+                return Promise.all(uniqueBarangays.filter(b => !foundExisting.includes(b)).map((barangay_name, i) => setDoc(
+                    doc(db, BARANGAY_COLLECTION, (lastBarangayId + i + 1).toString()),
+                    { barangay_name }
+                )));
+            })
             .then(() => loadBarangays())
             .catch(console.error);
     }
 
-    const prepopulate = () => {
-        Promise.all(consumerData.map(({ barangay, billing_num, ...payload }) => 
+    const uploadCustomerData = () => {
+        Promise.all(inputCustomerData.map(({ barangay_name, billing_num, ...payload }) =>
             setDoc(
                 doc(db, CONSUMER_DATA_COLLECTION, billing_num.toString()),
                 {
-                    barangay_id: barangays.find(b => b.get('barangay_name') === barangay).id,
+                    barangay_id: barangays.find(b => b.get('barangay_name') === barangay_name).id,
                     ...payload
                 }
             )
@@ -254,43 +99,105 @@ export default function() {
             .catch(console.error);
     }
 
-    const deleteConsumerData = async () => {
-        const shouldDelete = confirm('Are you sure you want to delete the consumer data?');
+    const uploadUserData = () => {
+        Promise.all(inputUserData.map(({ password, ...payload }) =>
+            createUserWithEmailAndPassword(auth, payload.email, password)
+                .then(({user}) => {
+                    return setDoc(
+                        doc(db, USER_COLLECTION, user.uid),
+                        payload
+                    );
+                })
+        ))
+            .then(() => loadUserData())
+            .catch(console.error);
+    }
+
+    const deleteAllConsumerData = async () => {
+        const shouldDelete = confirm('Are you sure you want to delete ALL the consumer data?');
         if (!shouldDelete) return;
         const snapshot = await getDocs(collection(db, CONSUMER_DATA_COLLECTION));
         await Promise.all(snapshot.docs.map(doc => deleteDoc(doc.ref)));
-        setConsumerData(0);
-        await loadConsumerData();
+        setConsumerDataCount(0);
     }
 
-    const deleteBarangays = async () => {
-        const shouldDelete = confirm('Are you sure you want to delete Barangay data?');
+    const deleteAllBarangays = async () => {
+        const shouldDelete = confirm('Are you sure you want to delete ALL barangay data?');
         if (!shouldDelete) return;
         const snapshot = await getDocs(collection(db, BARANGAY_COLLECTION));
         await Promise.all(snapshot.docs.map(doc => deleteDoc(doc.ref)));
         setBarangays([]);
-        await loadBarangays();
+    }
+
+    const deleteAllUserData = async () => {
+        // TODO: you cannot delete user on firebase auth. please manually delete it through the dashboard
+        const shouldDelete = confirm('Are you sure you want to delete ALL the user data?');
+        if (!shouldDelete) return;
+        const snapshot = await getDocs(collection(db, USER_COLLECTION));
+        await Promise.all(snapshot.docs.map(doc => deleteDoc(doc.ref)));
+        setUserDataCount(0);
+    }
+
+    const onHandleUploadCdataCsv = (file: File | null) => {
+        setInputCustomerData([]);
+        if (!file) return;
+        Papa.parse<ConsumerData>(file, {
+            header: true,
+            dynamicTyping: (field) => field !== 'water_meter_id',
+            complete(results) {
+                setInputCustomerData(results.data);
+            },
+        });
+    }
+
+    const onHandleUploadUsersCsv = (file: File | null) => {
+        setInputUserData([]);
+        if (!file) return;
+        Papa.parse<User>(file, {
+            header: true,
+            dynamicTyping: (field) => field === 'isAdmin',
+            complete(results) {
+                setInputUserData(results.data);
+            },
+        });
     }
 
     return (
         <Center>
             <Stack align="center">
                 <Title>God Mode</Title>
-                <Button fullWidth disabled={!loaded || barangays.length !== 0} onClick={prepopulateBarangays}>
-                    Prepopulate barangays
-                </Button>
 
-                <Button fullWidth disabled={!loaded || consumerDataCount !== 0 || barangays.length === 0} onClick={prepopulate}>
-                    Prepopulate consumer data
-                </Button>
-                
-                <Button fullWidth color="red" disabled={!loaded || consumerDataCount === 0} onClick={deleteConsumerData}>
-                    Delete consumer data
-                </Button>
+                <Stack>
+                    <FileInput w="100%" label="New consumer data file" placeholder="File must be CSV" accept="text/csv" onChange={onHandleUploadCdataCsv} />
 
-                <Button fullWidth color="red" disabled={!loaded || barangays.length === 0} onClick={deleteBarangays}>
-                    Delete barangays
-                </Button>
+                    <Button fullWidth disabled={inputCustomerData.length === 0} onClick={uploadBarangays}>
+                        Upload NEW barangays
+                    </Button>
+
+                    <Button fullWidth disabled={inputCustomerData.length === 0} onClick={uploadCustomerData}>
+                        Upload NEW consumer data
+                    </Button>
+
+                    <Button fullWidth color="red" disabled={!isRemoteDataLoaded || consumerDataCount === 0} onClick={deleteAllConsumerData}>
+                        Delete ALL consumer data
+                    </Button>
+
+                    <Button fullWidth color="red" disabled={!isRemoteDataLoaded || barangays.length === 0} onClick={deleteAllBarangays}>
+                        Delete ALL barangays
+                    </Button>
+                </Stack>
+
+                <Stack w="100%">
+                    <FileInput w="100%" label="New user data file" placeholder="File must be CSV" accept="text/csv" onChange={onHandleUploadUsersCsv} />
+
+                    <Button fullWidth disabled={inputUserData.length === 0} onClick={uploadUserData}>
+                        Upload NEW users
+                    </Button>
+
+                    <Button fullWidth color="red" disabled={!isRemoteDataLoaded || userDataCount === 0} onClick={deleteAllUserData}>
+                        Delete ALL users
+                    </Button>
+                </Stack>
             </Stack>
         </Center>
     );
