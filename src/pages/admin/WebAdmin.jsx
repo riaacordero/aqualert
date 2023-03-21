@@ -11,7 +11,7 @@ import { db } from '../../firebase';
 import dayjs from 'dayjs';
 import { STATUS_TYPES } from '../../utils';
 import { useForm } from '@mantine/form';
-import { BARANGAY_COLLECTION, CONSUMER_DATA_COLLECTION, USER_COLLECTION } from '../../collection_constants';
+import { BARANGAY_COLLECTION, CONSUMER_DATA_COLLECTION, REPORT_COLLECTION, USER_COLLECTION } from '../../collection_constants';
 import aho_corasick from '../../aho_corasick';
 
 function Panner({ coords }) {
@@ -108,7 +108,7 @@ export default function () {
     }
 
     function getReports() {
-        getDocs(collection(db, 'reports'))
+        getDocs(collection(db, REPORT_COLLECTION))
             .then(response => {
                 return Promise.all([
                     fetchAssociatedData(response),
@@ -155,8 +155,8 @@ export default function () {
     }
 
     async function changeStatus(report, newStatus) {
-        await updateDoc(doc(db, 'consumer_data', report?.user.billingNo), { status: newStatus });
-        await updateDoc(doc(db, 'reports', report?.id), { last_updated: new Date() });
+        await updateDoc(doc(db, CONSUMER_DATA_COLLECTION, report?.user.billingNo), { status: newStatus });
+        await updateDoc(doc(db, REPORT_COLLECTION, report?.id), { last_updated: new Date() });
         showNotification({
             color: 'green',
             title: 'Status set successfully!',
