@@ -30,7 +30,7 @@ export default function() {
             lastName: (value) => value.length > 1 ? null : 'Cannot leave blank',
             email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
             password: (value) => value.length > 8 ? null : 'Password must have at least 8 characters',
-            billingNo: (value) => value.length === 9 ? null : 'Billing Number is 9 digits long'
+            billingNo: (value) => value.length === 11 ? null : 'Billing Number is 11 digits long. Include dash!'
         },       
     })
     
