@@ -279,9 +279,9 @@ export default function () {
                 </Stack>
                 <Stack sx={{ flex: 1, flexGrow: 1 }} h="100%">
                     <Flex direction='row' gap='sm'>
-                        <Paper w={380} radius="xs" pl={10} pr={10} py={5} mb="xl" withBorder >
+                        <Paper w={300} radius="xs" pl={10} pr={10} py={5} mb="xl" withBorder >
                             <Flex direction="row" gap='sm' wrap="wrap">
-                                <Text fz="md" fw={500}>Selected Barangay: </Text>
+                                <Text fz="md" fw={500}>Barangay: </Text>
                                 <Text fz={16} >{report?.consumer_data?.barangay?.barangay_name}</Text>
                             </Flex>
                         </Paper>
