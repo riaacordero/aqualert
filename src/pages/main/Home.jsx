@@ -5,9 +5,9 @@ import 'leaflet/dist/leaflet.css';
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../../context'
 import { useNavigate } from 'react-router-dom';
-import { collection, documentId, getDocs, query, QuerySnapshot, where } from 'firebase/firestore';
+import { collection, documentId, getDocs, query, QueryDocumentSnapshot, QuerySnapshot } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { STATUS_TYPES } from '../../utils';
+import { batchLoadData, STATUS_TYPES } from '../../utils';
 import dayjs from 'dayjs';
 import { CONSUMER_DATA_COLLECTION, REPORT_COLLECTION, USER_COLLECTION } from '../../collection_constants';
 
@@ -87,28 +87,27 @@ export default function () {
     const [loaded, setLoaded] = useState(false);
 
     /**
-     * 
-     * @param {QuerySnapshot<import('firebase/firestore').DocumentData>} snapshot 
+     *
+     * @param {QueryDocumentSnapshot<import('firebase/firestore').DocumentData>[]} docs
      */
-    function fetchConsumerData(snapshot) {
-        const billingNos = [...new Set(snapshot.docs.map(doc => doc.get('billingNo')).filter(Boolean))];
-  
-        return getDocs(query(
-            collection(db, CONSUMER_DATA_COLLECTION), 
-            where(documentId(), 'in', billingNos)
-        ))
+    function fetchConsumerData(docs) {
+        return batchLoadData(
+            collection(db, CONSUMER_DATA_COLLECTION),
+            documentId(),
+            docs.map(doc => doc.get('billingNo'))
+        );
     }
 
     /**
-     * 
-     * @param {QuerySnapshot<import('firebase/firestore').DocumentData>} snapshot 
+     *
+     * @param {QuerySnapshot<import('firebase/firestore').DocumentData>} snapshot
      */
     function fetchUserData(snapshot) {
-        const userIds = [...new Set(snapshot.docs.map(doc => doc.get('user_id')).filter(Boolean))];
-        return getDocs(query(
-            collection(db, USER_COLLECTION), 
-            where(documentId(), 'in', userIds)
-        ))
+        return batchLoadData(
+            collection(db, USER_COLLECTION),
+            documentId(),
+            snapshot.docs.map(doc => doc.get('user_id'))
+        );
     }
 
     /**
@@ -124,12 +123,12 @@ export default function () {
     async function getReports() {
         try {
             const response = await getDocs(query(collection(db, REPORT_COLLECTION)));
-            const [usersResponse, consumersResponse] = await fetchAssociatedData(response);
+            const [userDocs, consumerDocs] = await fetchAssociatedData(response);
 
             // present contain each document that is present in the collection
             const mappedReports = response.docs.map(doc => {
-                const user = usersResponse.docs.find(u => u.id === doc.get('user_id'));
-                const consumer_data = user ? consumersResponse.docs.find(c => c.id == user.get('billingNo')) : null;
+                const user = userDocs.find(u => u.id === doc.get('user_id'));
+                const consumer_data = user ? consumerDocs.find(c => c.id == user.get('billingNo')) : null;
                 return {
                     ...consumer_data?.data(),
                     id: doc.id,

@@ -6,10 +6,10 @@ import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../../context'
-import { addDoc, collection, doc, documentId, getDocs, query, QuerySnapshot, setDoc, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, documentId, getDocs, QueryDocumentSnapshot, QuerySnapshot, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import dayjs from 'dayjs';
-import { STATUS_TYPES } from '../../utils';
+import { batchLoadData, STATUS_TYPES } from '../../utils';
 import { useForm } from '@mantine/form';
 import { BARANGAY_COLLECTION, CONSUMER_DATA_COLLECTION, REPORT_COLLECTION, USER_COLLECTION } from '../../collection_constants';
 import aho_corasick from '../../aho_corasick';
@@ -60,40 +60,40 @@ export default function () {
     }, [report]);
 
     /**
-     * 
-     * @param {QuerySnapshot<import('firebase/firestore').DocumentData>} snapshot 
+     *
+     * @param {QueryDocumentSnapshot<import('firebase/firestore').DocumentData>[]} snapshots
+     * @returns {Promise<QueryDocumentSnapshot<import('firebase/firestore').DocumentData>[]>}
      */
-    function fetchBarangayData(snapshot) {
-        const barangayIds = [...new Set(snapshot.docs.map(doc => doc.get('barangay_id')).filter(Boolean))];
-        return getDocs(query(
+    async function fetchBarangayData(snapshots) {
+        return batchLoadData(
             collection(db, BARANGAY_COLLECTION),
-            where(documentId(), 'in', barangayIds)
-        ))
+            documentId(),
+            snapshots.map(doc => doc.get('barangay_id'))
+        );
     }
 
     /**
-     * 
-     * @param {QuerySnapshot<import('firebase/firestore').DocumentData>} snapshot 
+     *
+     * @param {QueryDocumentSnapshot<import('firebase/firestore').DocumentData>[]} snapshots
      */
-    function fetchConsumerData(snapshot) {
-        const billingNos = [...new Set(snapshot.docs.map(doc => doc.get('billingNo')).filter(Boolean))];
-
-        return getDocs(query(
+    function fetchConsumerData(snapshots) {
+        return batchLoadData(
             collection(db, CONSUMER_DATA_COLLECTION),
-            where(documentId(), 'in', billingNos)
-        ))
+            documentId(),
+            snapshots.map(doc => doc.get('billingNo'))
+        );
     }
 
     /**
-     * 
-     * @param {QuerySnapshot<import('firebase/firestore').DocumentData>} snapshot 
+     *
+     * @param {QuerySnapshot<import('firebase/firestore').DocumentData>} snapshot
      */
     function fetchUserData(snapshot) {
-        const userIds = [...new Set(snapshot.docs.map(doc => doc.get('user_id')).filter(Boolean))];
-        return getDocs(query(
+        return batchLoadData(
             collection(db, USER_COLLECTION),
-            where(documentId(), 'in', userIds)
-        ))
+            documentId(),
+            snapshot.docs.map(doc => doc.get('user_id'))
+        );
     }
 
     /**
@@ -115,12 +115,12 @@ export default function () {
                     response
                 ])
             })
-            .then(([[usersResponse, consumersResponse, barangayResponse], response]) => {
+            .then(([[userDocs, consumerDocs, barangayDocs], response]) => {
                 // present contain each document that is present in the collection
                 const mappedReports = response.docs.map(doc => {
-                    const user = usersResponse.docs.find(u => u.id === doc.get('user_id'));
-                    const consumer_data = user ? consumersResponse.docs.find(c => c.id == user.get('billingNo')) : null;
-                    const barangay = consumer_data ? barangayResponse.docs.find(b => b.id == consumer_data.get('barangay_id')) : null;
+                    const user = userDocs.find(u => u.id === doc.get('user_id'));
+                    const consumer_data = user ? consumerDocs.find(c => c.id == user.get('billingNo')) : null;
+                    const barangay = consumer_data ? barangayDocs.find(b => b.id == consumer_data.get('barangay_id')) : null;
 
                     return {
                         ...doc.data(),

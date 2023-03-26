@@ -1,11 +1,14 @@
-import { Button, Center, FileInput, Stack, Title } from "@mantine/core";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { Button, Center, FileInput, Stack, TextInput, Title } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { createUserWithEmailAndPassword, deleteUser, EmailAuthProvider, reauthenticateWithCredential, SignInMethod } from "firebase/auth";
 import { doc, setDoc, collection, getDocs, DocumentData, QueryDocumentSnapshot, deleteDoc, getCountFromServer, query, where } from "firebase/firestore";
 import Papa from "papaparse";
 import { useEffect, useMemo } from "react";
 import { useState } from "react";
 import { BARANGAY_COLLECTION, CONSUMER_DATA_COLLECTION, USER_COLLECTION } from "../../collection_constants";
+import { useAuth } from "../../context";
 import { auth, db } from "../../firebase";
+import { batchLoadData } from "../../utils";
 
 interface ConsumerData {
     billing_num: string
@@ -36,6 +39,7 @@ export default function() {
     const [userDataCount, setUserDataCount] = useState(0);
     const [consumerDataCount, setConsumerDataCount] = useState(0);
     const lastBarangayId = useMemo(() => parseInt(barangays[barangays.length - 1]?.id ?? '100000359' /* 360 */), [barangays]);
+    const { user, signout } = useAuth();
 
     useEffect(() => {
         Promise.all([
@@ -72,10 +76,9 @@ export default function() {
         const uniqueBarangays = Array.from(new Set(inputCustomerData.map(d => d.barangay_name)));
 
         // Exclude previous barangays
-        const existingBarangaysQuery = query(collection(db, BARANGAY_COLLECTION), where('barangay_name', 'in', uniqueBarangays))
-        getDocs(existingBarangaysQuery)
-            .then(snapshot => {
-                const foundExisting = snapshot.docs.map(d => d.get('barangay_name') as string);
+        batchLoadData(collection(db, BARANGAY_COLLECTION), 'barangay_name', inputCustomerData.map(d => d.barangay_name))
+            .then(docs => {
+                const foundExisting = docs.map(d => d.get('barangay_name') as string);
                 return Promise.all(uniqueBarangays.filter(b => !foundExisting.includes(b)).map((barangay_name, i) => setDoc(
                     doc(db, BARANGAY_COLLECTION, (lastBarangayId + i + 1).toString()),
                     { barangay_name }
@@ -150,6 +153,26 @@ export default function() {
         });
     }
 
+    const deleteAccountForm = useForm({
+        initialValues: {
+            password: ''
+        }
+    });
+
+    const deleteCurrentUser = async ({ password }: { password: string }) => {
+        if (!user) return;
+
+        try {
+            const newUser = await reauthenticateWithCredential(user.rawUser, EmailAuthProvider.credential(user.rawUser.email, password));
+
+            await deleteUser(newUser.user);
+            await signout();
+            await deleteDoc(doc(db, USER_COLLECTION, user.rawUser.uid));
+        } catch (e) {
+            deleteAccountForm.setErrors({ password: e.toString() });
+        }
+    }
+
     const onHandleUploadUsersCsv = (file: File | null) => {
         setInputUserData([]);
         if (!file) return;
@@ -197,6 +220,20 @@ export default function() {
                     <Button fullWidth color="red" disabled={!isRemoteDataLoaded || userDataCount === 0} onClick={deleteAllUserData}>
                         Delete ALL users
                     </Button>
+
+                    {user && <form onSubmit={deleteAccountForm.onSubmit(deleteCurrentUser)}>
+                        <Stack>
+                            <TextInput
+                                label="Confirm delete user password"
+                                type="password"
+                                placeholder="Input your password to delete account"
+                                {...deleteAccountForm.getInputProps('password')} />
+
+                            <Button fullWidth color="red" disabled={!deleteAccountForm.isDirty('password')} type="submit">
+                                Delete current user
+                            </Button>
+                        </Stack>
+                    </form>}
                 </Stack>
             </Stack>
         </Center>
