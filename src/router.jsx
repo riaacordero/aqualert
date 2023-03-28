@@ -1,5 +1,4 @@
 // @ts-nocheck
-import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import Login from './pages/main/Login.jsx';
 import Home from './pages/main/Home.jsx';
@@ -13,7 +12,6 @@ import WebLogin from './pages/admin/WebLogin.jsx';
 import GodMode from './pages/admin/GodMode.tsx';
 import GuestOnly from './components/GuestOnly';
 import RequireAuth from './components/RequireAuth.jsx';
-import WebAdmintTest from './pages/admin/WebAdmintTest.jsx';
 import ComingSoon from './pages/main/ComingSoon.jsx';
 
 const router = createBrowserRouter([
